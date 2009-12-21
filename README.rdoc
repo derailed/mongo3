@@ -9,10 +9,9 @@ Coming soon...
 == PROJECT INFORMATION
 
 * Developer:  Fernand Galiana
-* Site:       http://rackamole.com
+* Site:       http://mongo3.com
 * Twitter:    http://twitter.com/mongo_3
 * Forum:      http://groups.google.com/group/mongo3
-* Git:        git://github.com/derailed/mongo3.git
 
 == FEATURES:
 
