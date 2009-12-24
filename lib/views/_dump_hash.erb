@@ -1,0 +1,14 @@
+<table border="0" cellpadding="10" cellspacing="20" style="width:98%;border-collapse:collapse;text-align:left">
+  <thead style="font-weight:bold;border-bottom:1px #c1c1c1 solid;color:#c1c1c1">
+    <th width="20%">Name</th>
+    <th width="100%">Value</th>
+  </thead>
+  <tbody>
+    <% @info.each_pair do |name, info| %>
+      <tr valign="top">
+        <td><%= name %></td>
+        <td><%= display_info(info) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

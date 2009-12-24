@@ -1,0 +1,5 @@
+<ul>
+  <% @db.collection_names.sort{ |a,b| a <=> b }.each do |cltn|%>
+    <li><%=cltn%> [<%=@db[cltn].count%> rows]</li>
+  <% end %>
+</ul>

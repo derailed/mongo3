@@ -1,0 +1,45 @@
+<%= partial :crumbs %>
+
+<div id="actions"> 
+    <a class="prevPage">&laquo; back</a> 
+    <a class="nextPage">more &raquo;</a> 
+</div> 
+
+<div class="scrollable vertical">
+  <div class="items">
+    <% @landscape.keys.sort{ |a,b| a <=> b }.each do |name|%>
+      <% config = @landscape[name] %>
+      <div id="<%=name%>" class="item host">
+        <img class="tag" src="/images/monkey.png"/>        
+        <p class="heading">
+          <%= name %>
+        </p>
+        <% if config.has_key?(:user) %>
+          <img class="lock" src="/images/lock.png"/>
+        <% end %>        
+        <ul class="host_info">
+          <li><%=config[:host]%></li>
+          <li><%=config[:port]%></li>
+        </ul>                  
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  $("div.scrollable").scrollable({ 
+      vertical:true,  
+      size:    5
+  }).mousewheel();
+
+  $( function() {
+    $("div.item").click( function() {
+      window.location.href = "/db/" + this.id;
+    });
+        
+    $("div.item").hover( 
+      function() { $(this).addClass( "selected" ) }, 
+      function() { $(this).removeClass( "selected" ) }
+    );
+  })
+</script>

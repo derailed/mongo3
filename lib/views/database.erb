@@ -1,0 +1,37 @@
+<%= partial :crumbs %>
+
+<div id="actions"> 
+    <a class="prevPage">&laquo; back</a> 
+    <a class="nextPage">more &raquo;</a> 
+</div> 
+
+<div class="scrollable vertical">
+  <div class="items">  
+    <% db_info = @connection.database_info; db_info.keys.sort.each do |db_name| %>
+      <% next if skip_db?( db_name )%>
+      <div id="<%=db_name%>" class="item">
+        <img class="tag" src="/images/mongo3_db.png"/>        
+        <p><%= db_name %></p>
+        <span><%= to_mb(db_info[db_name]) %></span>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  $( function() {
+    $("div.item").click( function() {
+      window.location.href = "/cltn/" + this.id;
+    });
+    
+    $("div.scrollable").scrollable({ 
+        vertical:true,  
+        size:    5
+    }).mousewheel();
+    
+    $("div.item").hover( 
+      function() { $(this).addClass( "selected" ) }, 
+      function() { $(this).removeClass( "selected" ) }
+    );
+  })
+</script>

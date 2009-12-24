@@ -1,10 +1,17 @@
 == Mongo3
 
-  Rule your mongoDB clusters! An admin console...
+  Rule your mongoDB clusters!
+  A Sinatra based admin console for mongoDB
   
 == DESCRIPTION:
 
-Coming soon...
+  Mongo3 allows you to manage your mongoDB clusters using a web based admin console.
+  The console provides for getting an overview of your mongo landscape and drilldown to
+  see various information about your databases. You will be able to manage your clusters
+  by performing common database admin tasks directly from the web console.
+  
+  The initial release of Mongo3 will be a read only shallow mode. Further development
+  still needs to take place to build up the functionality from the existing code base.
 
 == PROJECT INFORMATION
 
@@ -15,33 +22,57 @@ Coming soon...
 
 == FEATURES:
 
-== REQUIREMENTS:
+* Easily administer your mongo cluster information
+* Get a real time snapshot of what your configuration looks like
+* Drill down on clusters, databases, collections and indexes
+* Manage all mongo artifacts from a single web interface
+
+== ROAD MAP:
+
+* Provide support for db authentication
+* Ability to drilldown in collections and query for content
+* CRUD on dbs, collections, indexes, users
+* Support for managing shards and replication
 
 == INSTALL:
   
+  sudo gem install mongo3
+  
 == USAGE:
+  
+=== Configure It!
+
+  You will need to give mongo3 some information about your mongo configuration. 
+  In order to do so create a .mongo3 directory in your home directory and create 
+  a file landscape.yml. You will need to specify the envs, host and ports specific
+  to your configuration, but here is a sample.
+  
+  landscape.yml  
+    development:
+      host: localhost
+      port: 27017
+    
+    beta:
+      host: beta_host_name
+      port: 27017
+    
+=== Launch It!
+
+    Launch it. Fires up sinatra and opens up the console  
+    > mongo3
   
 == LICENSE:
 
-(The MIT License)
+Copyright 2009-2010 LiquidRail LLC
 
-Copyright (c) 2009
+Licensed under the Apache License, Version 2.0 (the "License"); 
+you may not use this file except in compliance with the License. 
+You may obtain a copy of the License at 
 
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-'Software'), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  http://www.apache.org/licenses/LICENSE-2.0 
+  
+Unless required by applicable law or agreed to in writing, software 
+distributed under the License is distributed on an "AS IS" BASIS, 
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+See the License for the specific language governing permissions and 
+limitations under the License. 

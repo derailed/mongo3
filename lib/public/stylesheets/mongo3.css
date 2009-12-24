@@ -1,0 +1,275 @@
+* {
+  outline-color: invert;
+  outline-style: none;
+  outline-width: medium;
+  margin:        0px;
+  padding:       0px;
+}             
+
+body {
+	font-family:      "Trebuchet","Lucida Grande","Lucida Sans Unicode","bitstream vera sans","trebuchet ms","verdana";	
+  background:       #212021 url(../images/header.png) repeat-x top left;
+	color:            #fff;
+  font-size:        2em;
+	font-size-adjust: none;
+	font-stretch:     normal;
+	font-style:       normal;
+	font-variant:     normal;
+	font-weight:      normal;
+  margin:           0;
+}
+
+#overall {
+  margin:        5px auto;
+  width:         950px;
+  overflow:      none;
+}
+
+span#log {
+  color: #ff9d2a;
+}
+
+div#logo {
+  float:         left;
+  width:         45%;
+  margin:        10px 0px 25px 20px;
+}
+
+#main {
+  clear:    left;
+  margin:   20px 10px 10px 20px;
+  overflow: none;
+}
+
+ul {
+  list-style-image:    none;
+  list-style-position: outside;
+  list-style-type:     none;
+}
+
+a {
+  text-decoration: none;
+  color:           #434343;
+}
+a:hover {
+  color: #92b948;
+}
+
+div#crumbs {
+  margin:    0px 0px 10px 0px;
+  color:     #c1c1c1;
+  font-size: 0.5em;
+}
+
+a.info {
+  cursor:    pointer;
+  font-size: .9em;
+  color:     #f4f4f4;
+}
+a.info:hover {
+  border-bottom: 3px #92b948 solid;
+  color:         #92b948;  
+}
+
+span.crumb {
+  font-size: 1em;
+  cursor: pointer;
+}
+span.crumb:hover {
+  border-bottom: 3px #92b948 solid;
+  color:         #92b948;
+}
+span.selected {
+  color: #92b948;
+}
+
+
+p.title {
+  font-size: 1.2em;
+  color:     #c1c1c1;
+}
+p.title span{
+  font-size:     1em;
+  margin-bottom: 10px;
+  color:         #c1c1c1;
+}
+
+/* ---------------------------------------------------------------------------- */
+/* Common */
+
+div.item {
+  border-top: 1px #1c1c1c solid;
+  padding:    10px 0px 0px 0px;
+  height:     100px;
+  clear:      both;
+  width:      100%;
+}
+
+div.item .tag {
+  float:left;
+}
+
+div.item .lock {
+  float: right;
+  width: 5%;
+  color: #434343;
+}
+
+div.selected {
+  background: transparent url(/images/li_select.png) repeat-x;
+  cursor: pointer;
+}
+ul.host_info {
+  font-size: 0.5em;
+  color:     #c1c1c1;
+  float:     left;
+}
+span {
+  color:     #c1c1c1;
+  font-size: 0.5em;
+}
+p.heading {
+  width: 80%;
+  float: left;
+}
+
+div.content {
+  font-size: 1em;
+  color:     #434343;
+}
+
+/* ---------------------------------------------------------------------------- */
+/* Overlay */
+
+div#details {
+  padding:                        0px 10px;
+  margin-top:                     7px;
+  display:                        none;
+  font-size:                      0.5em;
+  color:                          #fff;
+  background:                     #1c1c1c;
+  border:                         1px #92b948 solid;
+  -moz-border-radius-bottomleft:  7px;
+  -moz-border-radius-topleft:     7px;
+  -moz-border-radius-bottomright: 7px;
+  -moz-border-radius-topright:    7px;  
+}
+
+.overlay {
+  display:                        none;
+  z-index:                        10000;
+  background:                     #767c6b;
+  border:                         1px #afdb5a solid;
+  color:                          #fff;
+  width:                          650px;
+  min-height:                     400px;
+  -moz-border-radius-bottomleft:  7px;
+  -moz-border-radius-topleft:     7px;
+  -moz-border-radius-bottomright: 7px;
+  -moz-border-radius-topright:    7px;  
+  -moz-box-shadow:                0 0 90px 5px #000;
+  -webkit-box-shadow:             0 0 90px #000;
+} 
+.overlay .close {
+  background-image:  url(../images/close.png);
+  position:          absolute;
+  right:             -15px;
+  top:               -15px;
+  cursor:            pointer;
+  height:            35px;
+  width:             35px;
+}
+  
+/* ---------------------------------------------------------------------------- */
+/* Scrollers */
+
+div.scrollable { 
+  position:  relative; 
+  overflow:  hidden; 
+  height:    440px; 
+} 
+ 
+div.scrollable div.items { 
+  width:800px;
+  position:absolute;  
+  height:20000em; 
+}
+
+#actions {
+	width:800px;
+	margin:30px 0 10px 0;	
+}
+
+#actions a {
+	font-size:       0.6em;
+	text-decoration: none;
+	cursor:          pointer;
+	color:           #c1c1c1;
+}
+
+#actions a:hover {
+	text-decoration: underline;
+	color:           #92b948;
+}
+
+.disabled {
+	visibility:hidden;		
+}
+
+.nextPage {
+	float:right;
+}	
+
+
+/* Explorer css */
+div#landscape {
+  width:                          615px;
+  height:                         550px;
+  -moz-border-radius-bottomleft:  7px;
+  -moz-border-radius-topleft:     7px;
+  -moz-border-radius-bottomright: 7px;
+  -moz-border-radius-topright:    7px;  
+  border:                         1px #92b948 solid;
+  float:                          left;
+}
+
+div#right {
+  margin-left:                    625px;
+  padding:                        10px;
+  width:                          254px;
+  height:                         530px;
+  -moz-border-radius-bottomleft:  7px;
+  -moz-border-radius-topleft:     7px;
+  -moz-border-radius-bottomright: 7px;
+  -moz-border-radius-topright:    7px;  
+  border:                         1px #92b948 solid;
+}
+
+
+/* Tree nodes */
+span.what {
+  font-size: .4em;
+  color:     #92b946;
+  text-align:center;
+}
+.edge {
+  color:   #434343;
+  z-index: 0;
+}
+.node {
+  color:     #fff;
+  font-size: 0.3em;
+  cursor:    pointer;
+  z-index:   100;  
+}
+.level_0 {
+  font-weight: bold;
+}
+.level_1 {
+}
+.level_2 { 
+  color: #c1c1c1;
+}
+.level_3 {
+  color: #5273ff;
+}

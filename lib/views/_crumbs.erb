@@ -1,0 +1,13 @@
+<% count = 1; @crumbs.each do |pair| %>
+  <% clazz = (pair == @crumbs.last ? "selected" : "" )%>
+  <span rel="<%=pair.last%>" class="crumb <%=clazz%>"><%=pair.first%></span>
+  <% if count < @crumbs.size %>&raquo;<%end%>
+<% count +=1; end %>
+
+<script>
+  $( function() {    
+    $('span.crumb').click( function() {
+      $.ajax( {url: $(this).attr('rel'), dataType: 'script', method: 'GET'} );
+    });    
+  } );
+</script>
