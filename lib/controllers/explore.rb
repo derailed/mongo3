@@ -4,7 +4,7 @@ module Explore
   get '/explore' do
     reset_crumbs!
     @root = options.connection.build_tree
-Mongo3::Node.dump( @root )
+# Mongo3::Node.dump( @root )
     erb :explore
   end
 
