@@ -16,14 +16,13 @@ module MainHelper
     def back_paths!
       path_ids   = session[:path_ids]
       path_names = session[:path_names]
-      
       new_path_ids = path_ids.split( "|" )
       new_path_ids.pop
       session[:path_ids] = new_path_ids.join( "|" )
     
       new_path_names = path_names.split( "|" )
       new_path_names.pop
-      session[:path_names] = new_path_names.join( "|" )      
+      session[:path_names] = new_path_names.join( "|" )
     end
     
     def title_for( path_names )

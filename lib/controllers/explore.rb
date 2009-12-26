@@ -8,6 +8,7 @@ Mongo3::Node.dump( @root )
     erb :explore
   end
 
+  # -----------------------------------------------------------------------------
   get '/explore/back' do  
     session[:selected_cols] = nil
     session[:query_params]  = nil
@@ -34,7 +35,7 @@ Mongo3::Node.dump( @root )
     path_names = params[:path_names]
     
     @info = options.connection.show( path_names )
-    
+        
     session[:path_ids]   = path_ids
     session[:path_names] = path_names
     
@@ -45,6 +46,9 @@ Mongo3::Node.dump( @root )
   get '/explore/more_data/:path_ids/:path_names/*' do
     path_ids   = params[:path_ids]
     path_names = params[:path_names]
+
+    session[:path_ids]   = path_ids
+    session[:path_names] = path_names
     
     crumbs_from_path( path_ids, path_names )    
     
