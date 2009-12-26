@@ -29,3 +29,9 @@ PROJ.rcov.opts   = ["--sort", "coverage", "-T"]
 PROJ.ignore_file = "*.log"
 PROJ.spec.opts   << '--color'
 PROJ.rdoc.include = %w[.rb]
+
+# Dependencies
+depend_on "mongo"                 , ">= 0.18.1"
+depend_on "mongo_ext"             , ">= 0.18.1"
+depend_on "agnostic-will_paginate", ">= 3.0.0"
+

@@ -4,7 +4,7 @@ require 'sinatra'
 require File.expand_path( File.join(File.dirname(__FILE__), %w[.. lib mongo3]))
 require File.join(File.dirname(__FILE__), %w[.. lib main.rb])
 
-def open_browser(path)
+def open(path)
   case RUBY_PLATFORM
     when /darwin/
       system 'open', path
@@ -16,10 +16,14 @@ def open_browser(path)
 end
 
 Thread.new do 
-  puts "\n\n >>> Waiting for Franky to warm up..."
+  puts "\n"*2
+  puts ">>> Waiting for Franky to warm up..."
+  puts "\n"*2  
   sleep( 3 )
+  puts "\n"*2  
   puts "\n\n >>> Opening console..."
-  open_browser( "http://localhost:6666/explore" )
+  puts "\n"*2
+  open( "http://localhost:6666/explore" )
 end
 
 Sinatra::Application.run! :port => 6666

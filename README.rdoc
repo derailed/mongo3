@@ -29,10 +29,15 @@
 
 == ROAD MAP:
 
-* Provide support for db authentication
-* Ability to drilldown in collections and query for content
+* Provide support for db authentication [done]
+* Ability to drilldown in collections and query for content [done]
 * CRUD on dbs, collections, indexes, users
 * Support for managing shards and replication
+
+== DEPENDENCIES
+
+* mongo + mongo_ext
+* agnostic-will_paginate
 
 == INSTALL:
   
@@ -53,8 +58,10 @@
       port: 27017
     
     beta:
-      host: beta_host_name
-      port: 27017
+      host:     beta_host_name
+      port:     27017
+      user:     bobo
+      password: secret
     
 === Launch It!
 

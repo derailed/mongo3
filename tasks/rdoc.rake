@@ -19,8 +19,6 @@ namespace :doc do
             end
     rd.rdoc_files.push(*files)
 
-puts files.inspect
-
     name    = PROJ.name
     rf_name = PROJ.rubyforge.name
 

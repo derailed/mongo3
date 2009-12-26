@@ -1,0 +1,30 @@
+<div id="tooltip">&nbsp;</div>
+
+<% tip = "Enter query|sort<br/>{<b>'fred'</b>:20} | [[<b>'count'</b>:-1]]" %>
+
+<form id="search" onsubmit="search_submit();return false;" action="/cltn_search" method="post" style="text-align:center;margin:10px">
+  <fieldset>
+    <input id="search" type="text" name="search" class="search" title="<%=tip%>" value="<%=@query%>"/>
+    <button type="submit" id="submit_button" class="button search" style="display:none">search</button>
+  </fieldset>  
+  <fieldset style="">
+  </fieldset>
+</form>
+
+<script>
+ $( function() {
+   $( 'form#search input[title]').tooltip( { 
+     tip:    '#tooltip', 
+     events: { input: "mouseover,mouseout" } } );    
+ });
+
+ function search_submit()
+ {
+   $.ajax({
+     data:     $.param( $("form#search").serializeArray() ),
+     dataType: 'script',
+     type:     'post',
+     url:      '/cltn_search'
+   }); 
+ }
+</script>

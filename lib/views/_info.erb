@@ -1,4 +1,11 @@
-<h1 style="text-align:center">Details</h1>
+<h1 style="text-align:center">Details for <em><%=@info.delete( :title ) %></em></h1>
+
+<% if @info.has_key? :edit %>
+  <div style="text-align:right;">
+    <a href='<%=@info.delete(:edit)%>'>manage</a>
+  </div>
+<% end %>
+
 <table border="0" cellpadding="10" cellspacing="20" style="width:100%;border-collapse:collapse;;font-size:0.7em;text-align:left">
   <thead style="font-weight:bold;font-size:1em;border-bottom:1px #c1c1c1 solid;color:#c1c1c1">
     <th width="20%">Name</th>

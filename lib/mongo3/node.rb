@@ -12,6 +12,10 @@ module Mongo3
       @parent   = nil
     end
     
+    def self.make_node( name )
+      Node.new( name, name, :path_ids => name, :path_names => name )
+    end
+    
     # Add a child node
     def <<( new_one )
       new_one.parent = self
@@ -20,8 +24,8 @@ module Mongo3
     end
 
     def update_paths( node )
-      node.data[:crumbs] = node.path( :name )
-      node.data[:path]   = node.path
+      node.data[:path_names] = node.path( :name )
+      node.data[:path_ids]   = node.path( :oid )
       node.children.each do |child|
         child.update_paths( child )
       end

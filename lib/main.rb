@@ -3,6 +3,8 @@ require 'sinatra'
 require 'forwardable'
 require File.join( File.dirname(__FILE__), 'mongo3.rb' )
 require 'mongo'
+gem 'agnostic-will_paginate'
+require 'will_paginate'
 
 set :public, File.join( File.dirname(__FILE__), %w[public] )
 set :views , File.join( File.dirname(__FILE__), %w[views] )
@@ -21,9 +23,9 @@ end
 # Before filters
 before do
   unless request.path =~ /\.[css gif png js]/
-    @crumbs = session[:crumbs] 
+    @crumbs = session[:crumbs]
     unless @crumbs
-      @crumbs = [ ['HOME', '/center'] ]
+      @crumbs = [ ['home', '/explore/center/home'] ]
       session[:crumbs] = @crumbs
     end
   end

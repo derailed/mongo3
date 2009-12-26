@@ -273,3 +273,114 @@ span.what {
 .level_3 {
   color: #5273ff;
 }
+
+/* Pagination collections */
+div.cltn {
+  font-size: 0.4em;
+}
+
+div#fields {
+  margin:                         20px 10px;
+  padding:                        10px 10px;
+  overflow:                       hidden;
+  -moz-border-radius-bottomleft:  7px;
+  -moz-border-radius-topleft:     7px;
+  -moz-border-radius-bottomright: 7px;
+  -moz-border-radius-topright:    7px;  
+  border:                         1px #92b948 solid;    
+}
+div.title {
+  text-align: center;
+  font-size:  2em;
+}
+
+a.back {
+  font-size: 1.2em;
+}
+
+fieldset {
+  border: none;
+}
+fieldset.check {
+  float:  left;
+  width:  20%;
+}
+
+div.table {
+  padding:                        10px;
+  -moz-border-radius-bottomleft:  7px;
+  -moz-border-radius-topleft:     7px;
+  -moz-border-radius-bottomright: 7px;
+  -moz-border-radius-topright:    7px;  
+  border:                         1px #92b948 solid;    
+}
+
+table.cltn {
+  color:           #a1a1a1;
+  width:           100%;
+  border-collapse: collapse;
+  text-align:      left;
+}
+
+table.cltn thead {
+  font-weight:   bold;
+  border-bottom: 1px #c1c1c1 solid;
+  color:         #c1c1c1;
+}
+
+div.cltn div#summary {
+  font-size:  .8em;
+  text-align: right;
+  margin:     10px 10px;
+}
+
+div.cltn div#links {
+  margin:     10px 0px;
+  text-align: center;
+}
+
+input.search {
+  background:                     #fff url(/images/search.png) no-repeat 2px 6px;  
+  width:                          80%;
+  border:                         2px #434343 solid;
+  -moz-border-radius-bottomleft:  5px;
+  -moz-border-radius-bottomright: 5px;
+  -moz-border-radius-topleft:     5px;
+  -moz-border-radius-topright:    5px;   
+  height:                         25px;
+  font-size:                      1.2em;
+  color:                          #434343;
+  padding:                        5px 0px 0px 20px;
+}
+
+button {
+  -moz-border-radius-bottomleft:  14px;
+  -moz-border-radius-bottomright: 14px;
+  -moz-border-radius-topleft:     14px;
+  -moz-border-radius-topright:    14px;
+  -moz-box-shadow:                2px 2px 6px #232323;
+  background:                     transparent url(/images/button.png) repeat-x center bottom;
+  height:                         20px;
+  width:                          100px;
+  margin-right:                   10px;
+  color:                          #c1c1c1;
+}
+
+button.show:hover {
+  background-color: #ad1ecb;
+}
+
+button.search:hover {
+  background-color: #92b948;
+}
+
+#tooltip { 
+  display:    none; 
+  background: transparent url(/images/tooltip/black_arrow.png); 
+  font-size:  1em; 
+  height:     70px; 
+  width:      160px; 
+  padding:    25px; 
+  color:      #fff;     
+}
+

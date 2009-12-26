@@ -1,23 +1,23 @@
 module CrumbHelper
   
   helpers do    
-    def crumbs_from_path( path, crumbs )
-      crumb_tokens  = crumbs.split( "|" )
-      path_tokens   = path.split( "|" )
+    def crumbs_from_path( path_ids, path_names )
+      path_id_tokens   = path_ids.split( "|" )      
+      path_name_tokens = path_names.split( "|" )
       
       @crumbs = []
       count   = 0
-      crumb_tokens.each do |crumb|
-        @crumbs << [crumb, "/explore/center/#{path_tokens[count]}"]
+      path_name_tokens.each do |crumb|
+        @crumbs << [crumb, "/explore/center/#{path_id_tokens[count]}"]
         count += 1
       end
       session[:crumbs] = @crumbs
     end
     
     def pop_crumb!( node_id )
+      path  = "/explore/center/#{node_id}"
       level = 0
       range = nil
-      path  = "/explore/center/#{node_id}"
       @crumbs.each do |pair|
         if pair.last == path
           range = level
@@ -36,7 +36,7 @@ module CrumbHelper
   
     def add_crumb( title, url )
       titles = @crumbs.map{ |p| p.first }
-      unless titles.include?( title )        
+      unless titles.include?( title )
         @crumbs.pop if @crumbs.size == 3
         @crumbs << [title, url]
         session[:crumbs] = @crumbs
