@@ -33,7 +33,7 @@ Mongo3::Node.dump( @root )
     path_ids   = params[:path_ids]
     path_names = params[:path_names]
     
-    @info   = options.connection.show( path_names )
+    @info = options.connection.show( path_names )
     
     session[:path_ids]   = path_ids
     session[:path_names] = path_names

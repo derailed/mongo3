@@ -161,7 +161,7 @@ module Mongo3
       path_name_tokens = path_names.split( "|" )
       env              = path_name_tokens[1]      
       parent_id        = path_id_tokens.last
-      
+            
       if db_request?( path_name_tokens )
         sub_tree = build_db_tree( parent_id, env )
       else
@@ -173,7 +173,7 @@ module Mongo3
         
     # Connects to host and spews out all available dbs
     # BOZO !! Need to deal with Auth?
-    def build_db_tree( parent_id, env )
+    def build_db_tree( parent_id, env )    
       sub_root = nil
       connect_for( env ) do |con|      
         root = Node.make_node( "home" )

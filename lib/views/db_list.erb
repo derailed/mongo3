@@ -1,5 +1,7 @@
 <div class="cltn">
-  <a href="<%=@back_url%>"><%=@title%></a>
+  <div class="title"><%=@title%></div>
+  <a class="back" href="<%=@back_url%>">&laquo;&nbsp;back</a>
+
   <div id="summary">
     <%= page_entries_info @cltns, :entry_name => 'item' %>
   </div>
