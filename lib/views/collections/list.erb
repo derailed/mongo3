@@ -1,52 +1,53 @@
-<style>
-div#actions {  
-  text-align: right;
-  width:      100%;
-}
-div#actions span {
-  font-size: 1em;
-}
-button.action {
-  background: transparent url(/images/button_act.png) repeat-x center bottom;
-}
-button.clear:hover {
-  background-color: #3e41bd;
-}
-button.drop:hover {
-  background-color: #bb1947;
-}
-</style>
-
 <div class="cltn">
   <div class="title"><%=@title%></div>
   <a class="back" href="<%=@back_url%>">&laquo;&nbsp;back</a>
   
-  <div id="actions">
+  <div id="mgmt_actions">
     <img id="action_load" src="/images/loading.gif" style="width:25px;height:25px;vertical-align:sub;display:none"></img>        
-    <button class="action clear" title="Delete all records from collection">clear</button>
-    <button class="action drop" title="Drop the entire collection">drop</button>
+    <button class="action clear" rel="#confirm_clear" title="Delete all records from collection">clear</button>
+    <button class="action drop" rel="#confirm_drop" title="Drop the entire collection">drop</button>
   </div>
   <div id="results">
     <%= partial :'collections/results' %>
   </div>
 <div>
   
-  
+<div class="modal" id="confirm_clear">
+   <p>Clearing out the whole collection. Are you sure?</p>
+   <p style="margin:10px">
+     <button class="close yes" id="clear"> Yes </button>
+     <button class="close"> No </button>
+   </p>     
+</div>
+
+<div class="modal" id="confirm_drop">
+   <p>Dropping the whole collection. Are you sure?</p>
+   <p style="margin:10px">
+     <button class="close yes" id="drop"> Yes </button>
+     <button class="close"> No </button>
+   </p>     
+</div>
+
 <script>
   $( function() {
-    $( 'button.action' ).click( function() {
-      var r = confirm( "Are you sure?" );
-      if( r == false )
-        return false;
+    $('button.action' ).overlay( {
+      expose: {
+         color:     '#212021',
+         loadSpeed: 200,
+         opacity:   0.9 
+      },
+      closeOnClick: false
+    });
         
+    $( 'button.yes' ).click( function() {
       $.ajax({
         dataType:   'script',
         type:       'get',
-        url:        '/collections/' + $(this).html() + "/",
+        url:        '/collections/' + $(this).attr('id') + "/",
         beforeSend: function() { $('img#action_load').show(); },
         complete:   function() { $('img#action_load').hide(); }     
-      });
-    })
+      });            
+    });
   });
 </script>
   

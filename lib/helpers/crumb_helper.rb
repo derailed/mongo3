@@ -31,7 +31,7 @@ module CrumbHelper
   
     def reset_crumbs!
       @crumbs = [ ["home", '/explore/center/home'] ]
-      session[:crumbs] = @crumbs     
+      session[:crumbs] = @crumbs
     end
   
     def add_crumb( title, url )

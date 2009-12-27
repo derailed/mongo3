@@ -420,3 +420,46 @@ input.no_input {
   color: #c1c1c1;
 }
 
+div#mgmt_actions {  
+  text-align: right;
+  width:      100%;
+}
+div#mgmt_actions span {
+  font-size: 1em;
+}
+
+button.action {
+  background: transparent url(/images/button_act.png) repeat-x center bottom;
+}
+button.clear:hover {
+  background-color: #3e41bd;
+}
+button.drop:hover {
+  background-color: #bb1947;
+}
+
+img.delete {
+  cursor: pointer;
+  border: 0;
+  display:none;
+}
+img.wait {
+  width:          16px;
+  height:         16px;
+  vertical-align: sub;
+  display:        none;
+}
+
+.modal {
+	background-color:      #212021;
+	display:               none;
+	width:                 350px;
+	padding:               15px;
+	text-align:            center;
+	border:                2px solid #333;
+	opacity:               0.8;
+	-moz-border-radius:    6px;
+	-webkit-border-radius: 6px;
+	-moz-box-shadow:       0 0 20px #92b948;
+	-webkit-box-shadow:    0 0 20px #92b948;
+}

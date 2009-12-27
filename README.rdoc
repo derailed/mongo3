@@ -38,6 +38,7 @@
 
 * mongo + mongo_ext
 * agnostic-will_paginate
+* memcache-client
 
 == INSTALL:
   
@@ -65,7 +66,9 @@
     
 === Launch It!
 
-    Launch it. Fires up sinatra and opens up the console  
+    Launch it. Fires up sinatra and opens up the console
+    NOTE: Assumes memcache server is running on local host with default port!
+    
     > mongo3
   
 == LICENSE:

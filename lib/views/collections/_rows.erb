@@ -14,8 +14,8 @@
       <% id = cltn['_id'] %>
       <tr id="<%=id%>" valign="top">
         <td id="<%=id%>">
-          <img class="delete" id="<%=id%>" src="/images/delete.png" style="cursor:pointer;border:0;display:none" title="delete this record"/>
-          <img id="wait_<%=id%>" src="/images/loading.gif" style="width:16px;height:16px;vertical-align:sub;display:none"></img>          
+          <img class="delete" id="<%=id%>" src="/images/delete.png" title="delete this record"/>
+          <img class="wait" id="wait_<%=id%>" src="/images/loading.gif"></img>          
         </td>
         <% @selected_cols.each do |k| %>
           <td><%= format_number(cltn[k]) %></td>
@@ -30,24 +30,26 @@
 </div>      
 
 <script>
-  $("table#cltn tr" ).hover( 
-    function() { 
-      $(this).addClass( 'highlight' );
-      $("td#" + $(this).attr('id') + " img.delete" ).show();
-    }, 
-    function() { 
-      $(this).removeClass( 'highlight' );      
-      $("td#" + $(this).attr('id') + " img.delete" ).hide();
-    });
-  $( "img.delete" ).click( function() {
-    var id = $(this).attr('id');
-    $.ajax({
-      data:     {id: id},
-      dataType: 'script',
-      type:     'post',
-      url:      '/collections/delete/',
-      beforeSend: function() { $('img#_wait_' + id ).show(); },
-      complete:   function() { $('img#_wait_' + id ).hide(); }
-    }); 
+  $( function() {
+    $("table#cltn tr" ).hover( 
+      function() { 
+        $(this).addClass( 'highlight' );
+        $("td#" + $(this).attr('id') + " img.delete" ).show();
+      }, 
+      function() { 
+        $(this).removeClass( 'highlight' );      
+        $("td#" + $(this).attr('id') + " img.delete" ).hide();
+      });
+    $( "img.delete" ).click( function() {
+      var id = $(this).attr('id');
+      $.ajax({
+        data:     {id: id},
+        dataType: 'script',
+        type:     'post',
+        url:      '/collections/delete/',
+        beforeSend: function() { $('img#_wait_' + id ).show(); },
+        complete:   function() { $('img#_wait_' + id ).hide(); }
+      }); 
+    });    
   });
 </script>

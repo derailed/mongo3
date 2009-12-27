@@ -26,4 +26,4 @@ Thread.new do
   open( "http://localhost:6666/explore" )
 end
 
-Sinatra::Application.run! :port => 6666
+Sinatra::Application.run! :port => 6666, :environment => 'production'

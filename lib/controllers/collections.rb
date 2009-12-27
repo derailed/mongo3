@@ -4,12 +4,12 @@ module Collections
   
   # --------------------------------------------------------------------------- 
   # Paginate on a collection
-  get "/collections/:page" do
+  get "/collections/:page" do    
     @back_url  = "/explore/back"
     @page      = params[:page].to_i || 1
     @title     = title_for( session[:path_names] )
     
-    load_cltn( params[:page].to_i )
+    load_cltn( params[:page].to_i )    
     erb :'collections/list'
   end  
   
@@ -55,20 +55,16 @@ module Collections
 
   get '/collections/clear/' do
     path_names = session[:path_names]
-    options.connection.clear_cltn( path_names )
-    load_cltn
-    
-    flash_it!( :info, "Collection #{path_names.split('|').last} was cleared successfully!" )
-    erb :'collections/results.js', :layout => false    
+    options.connection.clear_cltn( path_names )    
+    flash_it!( :info, "Collection `#{path_names.split('|').last} was cleared successfully!" )
+    erb :'collections/all_done.js', :layout => false    
   end
 
   get '/collections/drop/' do
     path_names = session[:path_names]
-    options.connection.drop_cltn( path_names )
-    load_cltn
-    
-    flash_it!( :info, "Collection #{path_names.split('|').last} was dropped successfully!" )        
-    erb :'collections/results.js', :layout => false    
+    options.connection.drop_cltn( path_names )    
+    flash_it!( :info, "Collection `#{path_names.split('|').last} was dropped successfully!" )        
+    erb :'collections/all_done.js', :layout => false    
   end
   
   # ===========================================================================
@@ -82,10 +78,8 @@ module Collections
         @query = [query_params.first.to_json, query_params.last.to_json].join( " | " )
         @query.gsub!( /\"/, "'" )
       end
-puts "QUERY #{@query.inspect}"      
       @page          = page
       path_names     = session[:path_names]
-      path_ids       = session[:path_ids]
       
       @cltn          = options.connection.paginate_cltn( path_names, query_params, @page, 15 )
       @cols          = []

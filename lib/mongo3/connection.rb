@@ -5,6 +5,15 @@ module Mongo3
       @config_file = config_file
     end
 
+    def drop_db( path_names )
+      path_name_tokens = path_names.split( "|" )
+      env              = path_name_tokens[1]      
+      connect_for( env ) do |con|
+        db_name   = path_name_tokens.pop
+        con.drop_database( db_name )
+      end
+    end
+
     def drop_cltn( path_names )
       path_name_tokens = path_names.split( "|" )
       env              = path_name_tokens[1]      
@@ -56,11 +65,14 @@ module Mongo3
           con.database_info.sort { |a,b| b[1] <=> a[1] }.each { |e| info[:databases][e[0]] = to_mb( e[1] ) }
           info[:server] = con.server_info
         end
+      # BOZO !! Need to figure out links strategy!
       elsif path_name_tokens.size == 3
         db_name = path_name_tokens.pop
+        info[:links] = OrderedHash.new
         connect_for( env ) do |con|          
           db = con.db( db_name )
-          info[:edit]        = "/databases/1"
+          info[:links][:manage] = "/databases/1"
+          # info[:links][:drop]   = "/databases/drop/"
           info[:size]        = to_mb( con.database_info[db_name] )
           info[:node]        = db.nodes
           info[:collections] = db.collection_names.size
@@ -68,16 +80,18 @@ module Mongo3
           info[:last_status] = db.last_status
         end
       elsif path_name_tokens.size == 4
+        info[:links] = OrderedHash.new        
         cltn_name = path_name_tokens.pop
         db_name   = path_name_tokens.pop
         connect_for( env ) do |con|
           db      = con.db( db_name )
           cltn    = db[cltn_name]
           indexes = db.index_information( cltn_name )
-          
-          info[:edit]    = "/collections/1"
-          info[:size]    = cltn.count
-          info[:indexes] = format_indexes( indexes ) if indexes and !indexes.empty?
+                    
+          info[:links][:manage] = "/collections/1"
+          # info[:links][:drop]   = "/collections/drop/"          
+          info[:size]           = cltn.count
+          info[:indexes]        = format_indexes( indexes ) if indexes and !indexes.empty?
         end
       end      
       info
@@ -151,8 +165,7 @@ module Mongo3
     end
 
     # Build environment tree
-    def build_partial_tree( path_ids, path_names )
-      path_id_tokens   = path_ids.split( "|" )
+    def build_partial_tree( path_names )
       path_name_tokens = path_names.split( "|" )      
       bm_env           = path_name_tokens[1]
       bm_cltn          = path_name_tokens.pop if path_name_tokens.size == 4
@@ -192,11 +205,9 @@ module Mongo3
     end
     
     # Build an appropriate subtree based on requested item
-    def build_sub_tree( path_ids, path_names )
-      path_id_tokens   = path_ids.split( "|" )
+    def build_sub_tree( parent_id, path_names )
       path_name_tokens = path_names.split( "|" )
       env              = path_name_tokens[1]      
-      parent_id        = path_id_tokens.last
             
       if db_request?( path_name_tokens )
         sub_tree = build_db_tree( parent_id, env )

@@ -1,0 +1,57 @@
+<div id="summary">
+  <%= page_entries_info @cltns, :entry_name => 'item' %>
+</div>
+
+<table id="cltn" class="cltn" border="0" cellpadding="10" cellspacing="20">
+  <thead>
+    <th width="2%">&nbsp;</th>
+    <% cols = @cltns.first.keys %>
+    <% cols.each do |col| %>
+      <th align="<%=align_for( @cltns.first[col] )%>"><%=col%></th>
+    <% end %>
+  </thead>
+  <tbody>
+    <% count = 0; @cltns.each do |cltn| %>
+      <% path = "#{session[:path_names]}|#{cltn[:name]}"%>
+      <tr id="<%=count%>" valign="top">
+        <td id="<%=count%>">
+          <img class="delete" id="<%=path%>" rel="<%=count%>" src="/images/delete.png" title="drop this collection"/>
+          <img class="wait" id="wait_<%=count%>" src="/images/loading.gif"></img>          
+        </td>          
+        <% cltn.each_pair do |k, v| %>
+          <td align="<%=align_for( v )%>"><%= format_number(v) %></td>
+        <% end %>
+      </tr>
+    <% count+=1;end %>
+  </tbody>
+</table>
+
+<div id="links">
+  <%= will_paginate @cltns, :params => { :url => "/databases" } %>
+</div>
+
+<script>
+  $( function() {
+    $("table#cltn tr" ).hover( 
+      function() { 
+        $(this).addClass( 'highlight' );
+        $("td#" + $(this).attr('id') + " img.delete" ).show();
+      }, 
+      function() { 
+        $(this).removeClass( 'highlight' );      
+        $("td#" + $(this).attr('id') + " img.delete" ).hide();
+      });
+    $( "img.delete" ).click( function() {
+      var id = $(this).attr('id');
+      var count = $(this).attr('rel')
+      $.ajax({
+        data:     {path: id},
+        dataType: 'script',
+        type:     'post',
+        url:      '/databases/delete/',
+        beforeSend: function() { $('img#_wait_' + count ).show(); },
+        complete:   function() { $('img#_wait_' + count ).hide(); }
+      }); 
+    });    
+  });
+</script>

@@ -12,17 +12,17 @@ module Explore
     session[:selected_cols] = nil
     session[:query_params]  = nil
  
-    back_paths!
-    path_ids   = session[:path_ids]
-    path_names = session[:path_names]
+    back_paths! 
     
     reset_crumbs!
+    path_names = session[:path_names]
+    path_ids   = session[:path_ids]
     crumbs_from_path( path_ids, path_names )
     
-    @root = options.connection.build_partial_tree( path_ids, path_names )
+    @root = options.connection.build_partial_tree( path_names )
     
     # need to adjust crumbs in case something got blown...
-    @center = path_ids.split( "|" ).last
+    @center = path_ids.split('|').last
      
     erb :'explore/explore'
   end
@@ -31,26 +31,24 @@ module Explore
   get '/explore/show/:path_ids/:path_names' do
     path_ids   = params[:path_ids]
     path_names = params[:path_names]
-    
-    @info = options.connection.show( path_names )
+
+    update_paths!( path_ids, path_names )   
         
-    session[:path_ids]   = path_ids
-    session[:path_names] = path_names
-    
+    @info = options.connection.show( path_names )    
     partial :'explore/info'
   end
   
   # -----------------------------------------------------------------------------
   get '/explore/more_data/:path_ids/:path_names/*' do
     path_ids   = params[:path_ids]
+    parent_id  = path_ids.split("|").last
     path_names = params[:path_names]
 
-    session[:path_ids]   = path_ids
-    session[:path_names] = path_names
+    update_paths!( path_ids, path_names )   
     
     crumbs_from_path( path_ids, path_names )    
     
-    @sub_tree = options.connection.build_sub_tree( path_ids, path_names )
+    @sub_tree = options.connection.build_sub_tree( parent_id, path_names )
     @node_id  = @sub_tree.first[:id]
     
     erb :'explore/more_data_js', :layout => false

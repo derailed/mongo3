@@ -1,8 +1,16 @@
 0.0.1 - Initial Drop
-  not much there yet...
+  o not much there yet...
+  
 0.0.2 - 
-  Added mongo auth
-  Added collection/db views
+  o Added mongo auth
+  o Added collection/db views
+  
 0.0.3 -
-  Added collection crud
-  Refactored view code
+  o Added collection crud
+  o Refactored view code
+  
+0.0.4 - Winter cleaning!
+  o Fixed issue on over extending cookies. Ie mongo3 suffered amnesia. Switching to memcache
+  o Using memcache for session store - will need a local memcache server on default port!
+  o Added confirm dialog on clear and drop
+  o Bug fixes and some refactor

@@ -1,6 +1,12 @@
 module MainHelper  
  helpers do   
    
+    def update_paths!( path_ids, path_names )
+puts "UPDAING PATH #{path_ids} -- #{path_names}"      
+      session[:path_ids]   = path_ids
+      session[:path_names] = path_names
+    end
+    
     def align_for( value )
       return "right" if value.is_a?(Fixnum)
       "left"
@@ -12,16 +18,16 @@ module MainHelper
       value
     end
    
-    def back_paths!
+    def back_paths!      
       path_ids   = session[:path_ids]
-      path_names = session[:path_names]
       new_path_ids = path_ids.split( "|" )
       new_path_ids.pop
-      session[:path_ids] = new_path_ids.join( "|" )
     
+      path_names = session[:path_names]    
       new_path_names = path_names.split( "|" )
       new_path_names.pop
-      session[:path_names] = new_path_names.join( "|" )
+      
+      update_paths!( new_path_ids.join( "|" ), new_path_names.join( "|" ) )
     end
     
     def title_for( path_names )

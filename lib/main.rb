@@ -15,7 +15,8 @@ configure do
   Mongo3.load_all_libs_relative_to(__FILE__, 'helpers' )
   Mongo3.load_all_libs_relative_to(__FILE__, 'controllers' )
   
-  set :sessions  , true
+  use Rack::Session::Memcache, :namespace => 'mongo3'
+  
   set :connection, Mongo3::Connection.new( File.join( ENV['HOME'], %w[.mongo3 landscape.yml] ) )
 end
 
