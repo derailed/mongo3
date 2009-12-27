@@ -1,17 +1,16 @@
-module MainHelper
-
-  JS_ESCAPE_MAP = 
-  {
-    '\\'    => '\\\\',
-    '</'    => '<\/',
-    "\r\n"  => '\n',
-    "\n"    => '\n',
-    "\r"    => '\n',
-    '"'     => '\\"',
-    "'"     => "\\'" 
-  }
-  
+module MainHelper  
  helpers do   
+   
+    def align_for( value )
+      return "right" if value.is_a?(Fixnum)
+      "left"
+    end
+    
+    # Add thousand markers
+    def format_number( value )      
+      return value.to_s.gsub(/(\d)(?=\d{3}+(\.\d*)?$)/, '\1,') if value.instance_of?(Fixnum)
+      value
+    end
    
     def back_paths!
       path_ids   = session[:path_ids]
@@ -40,27 +39,40 @@ module MainHelper
       return info if info.is_a?( String )
       if info.is_a?( Hash )
         @info = info
-        partial :dump_hash
+        partial :'explore/dump_hash'
       elsif info.is_a?( Array )
         @info = info
-        partial :dump_array
+        partial :'explore/dump_array'
       else
-        info
+        format_number( info )
       end
     end
     
     def partial( page, options={} )
-      erb "_#{page}".to_sym, options.merge!( :layout => false )
+      if page.to_s.index( /\// )
+        page = page.to_s.gsub( /\//, '/_' ) 
+      else 
+        page = "_" + page.to_s
+      end
+      erb page.to_sym, options.merge!( :layout => false )
     end
    
+    JS_ESCAPE_MAP = 
+    {
+      '\\'    => '\\\\',
+      '</'    => '<\/',
+      "\r\n"  => '\n',
+      "\n"    => '\n',
+      "\r"    => '\n',
+      '"'     => '\\"',
+      "'"     => "\\'" 
+    }   
     def escape_javascript(javascript)
       if javascript
          javascript.gsub(/(\\|<\/|\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }
       else
          ''
       end
-    end
-    
-  end
-  
+    end    
+  end  
 end

@@ -1,0 +1,53 @@
+<div id="summary" style="clear:both">
+  <%= page_entries_info @cltn, :entry_name => 'item' %>
+</div>  
+
+<table id="cltn" class="cltn" border="0" cellpadding="10" cellspacing="20">
+  <thead>
+    <th width="2%">&nbsp;</td>
+    <% @selected_cols.each do |col| %>
+      <th><%=col%></th>
+    <% end %>
+  </thead>
+  <tbody>
+    <% @cltn.each do |cltn| %>
+      <% id = cltn['_id'] %>
+      <tr id="<%=id%>" valign="top">
+        <td id="<%=id%>">
+          <img class="delete" id="<%=id%>" src="/images/delete.png" style="cursor:pointer;border:0;display:none" title="delete this record"/>
+          <img id="wait_<%=id%>" src="/images/loading.gif" style="width:16px;height:16px;vertical-align:sub;display:none"></img>          
+        </td>
+        <% @selected_cols.each do |k| %>
+          <td><%= format_number(cltn[k]) %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div id="links">
+  <%= will_paginate @cltn, :params => { :url => '/collections' } %>
+</div>      
+
+<script>
+  $("table#cltn tr" ).hover( 
+    function() { 
+      $(this).addClass( 'highlight' );
+      $("td#" + $(this).attr('id') + " img.delete" ).show();
+    }, 
+    function() { 
+      $(this).removeClass( 'highlight' );      
+      $("td#" + $(this).attr('id') + " img.delete" ).hide();
+    });
+  $( "img.delete" ).click( function() {
+    var id = $(this).attr('id');
+    $.ajax({
+      data:     {id: id},
+      dataType: 'script',
+      type:     'post',
+      url:      '/collections/delete/',
+      beforeSend: function() { $('img#_wait_' + id ).show(); },
+      complete:   function() { $('img#_wait_' + id ).hide(); }
+    }); 
+  });
+</script>

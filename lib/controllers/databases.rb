@@ -1,7 +1,7 @@
 module Databases
   
   # ---------------------------------------------------------------------------  
-  get "/db/:page" do
+  get "/databases/:page" do
     page       = params[:page].to_i || 1
     path_ids   = session[:path_ids]
     path_names = session[:path_names]
@@ -10,7 +10,7 @@ module Databases
     @title     = title_for( path_names )    
     @back_url  = "/explore/back"
     
-    erb :db_list
+    erb :'databases/list'
   end  
   
 end

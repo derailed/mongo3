@@ -1,0 +1,52 @@
+<style>
+div#actions {  
+  text-align: right;
+  width:      100%;
+}
+div#actions span {
+  font-size: 1em;
+}
+button.action {
+  background: transparent url(/images/button_act.png) repeat-x center bottom;
+}
+button.clear:hover {
+  background-color: #3e41bd;
+}
+button.drop:hover {
+  background-color: #bb1947;
+}
+</style>
+
+<div class="cltn">
+  <div class="title"><%=@title%></div>
+  <a class="back" href="<%=@back_url%>">&laquo;&nbsp;back</a>
+  
+  <div id="actions">
+    <img id="action_load" src="/images/loading.gif" style="width:25px;height:25px;vertical-align:sub;display:none"></img>        
+    <button class="action clear" title="Delete all records from collection">clear</button>
+    <button class="action drop" title="Drop the entire collection">drop</button>
+  </div>
+  <div id="results">
+    <%= partial :'collections/results' %>
+  </div>
+<div>
+  
+  
+<script>
+  $( function() {
+    $( 'button.action' ).click( function() {
+      var r = confirm( "Are you sure?" );
+      if( r == false )
+        return false;
+        
+      $.ajax({
+        dataType:   'script',
+        type:       'get',
+        url:        '/collections/' + $(this).html() + "/",
+        beforeSend: function() { $('img#action_load').show(); },
+        complete:   function() { $('img#action_load').hide(); }     
+      });
+    })
+  });
+</script>
+  

@@ -1,0 +1,12 @@
+<% unless @cltn.empty? %>
+  <div id="fields">
+    <%= partial :'collections/fields_form' %>
+  </div>
+  <%= partial :'collections/search_form' %>
+
+  <div class="table">
+    <%= partial :'collections/rows' %>
+  </div>
+<% else %>
+  <div class="no_items">Oh snap! No items found...</span>
+<% end %>

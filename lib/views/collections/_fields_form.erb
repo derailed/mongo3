@@ -1,0 +1,28 @@
+<form id="cols" onsubmit="fields_submit();return false;" action="/collections/refresh/" method="post">
+  <div style="width:80%;overflow:hidden;float:left">
+    <% @cols.each do |col|%>
+      <fieldset class="check">
+        <input id="<%=col%>" type="checkbox" name="cols[<%=col%>]" value="1" <%=@selected_cols.include?(col) ? "checked" : ""%>/>
+        <label for='<%=col%>'><%=col%></label>
+      </fieldset>  
+    <% end %>
+  </div>
+  <fieldset style="float:right;">
+    <button type="submit" id="submit_button" class="button show">show</button>
+    <img id="show_load" src="/images/loading.gif" style="width:20px;height:20px;vertical-align:top;display:none"></img>
+  </fieldset>  
+</form>
+
+<script>
+ function fields_submit()
+ {
+   $.ajax({
+     data:     $.param( $("form#cols").serializeArray() ),
+     dataType: 'script',
+     type:     'post',
+     url:      '/collections/refresh/<%=@page%>/',
+     beforeSend: function() { $('img#show_load').show(); },
+     complete:   function() { $('img#show_load').hide(); }
+   }); 
+ }
+</script>

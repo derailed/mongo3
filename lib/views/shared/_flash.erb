@@ -1,0 +1,3 @@
+<% if @flash and !@flash.empty? %>
+  <%=(@flash[:error] ? @flash[:error] : @flash[:info]) %>
+<% end %>

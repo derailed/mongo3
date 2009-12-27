@@ -4,7 +4,43 @@ module Mongo3
     def initialize( config_file )
       @config_file = config_file
     end
-            
+
+    def drop_cltn( path_names )
+      path_name_tokens = path_names.split( "|" )
+      env              = path_name_tokens[1]      
+      connect_for( env ) do |con|
+        cltn_name = path_name_tokens.pop
+        db_name   = path_name_tokens.pop
+        db        = con.db( db_name )
+        cltn      = db[cltn_name]
+        cltn.drop
+      end
+    end
+
+    def clear_cltn( path_names )
+      path_name_tokens = path_names.split( "|" )
+      env              = path_name_tokens[1]      
+      connect_for( env ) do |con|
+        cltn_name = path_name_tokens.pop
+        db_name   = path_name_tokens.pop
+        db        = con.db( db_name )
+        cltn      = db[cltn_name]
+        cltn.remove
+      end
+    end
+           
+    def delete_row( path_names, id )
+      path_name_tokens = path_names.split( "|" )
+      env              = path_name_tokens[1]      
+      connect_for( env ) do |con|
+        cltn_name = path_name_tokens.pop
+        db_name   = path_name_tokens.pop
+        db        = con.db( db_name )
+        cltn      = db[cltn_name]
+        cltn.remove( {:_id => Mongo::ObjectID.from_string(id) } )
+      end
+    end
+     
     def show( path_names )
       path_name_tokens = path_names.split( "|" )
       info             = OrderedHash.new
@@ -24,7 +60,7 @@ module Mongo3
         db_name = path_name_tokens.pop
         connect_for( env ) do |con|          
           db = con.db( db_name )
-          info[:edit]        = "/db/1"
+          info[:edit]        = "/databases/1"
           info[:size]        = to_mb( con.database_info[db_name] )
           info[:node]        = db.nodes
           info[:collections] = db.collection_names.size
@@ -39,7 +75,7 @@ module Mongo3
           cltn    = db[cltn_name]
           indexes = db.index_information( cltn_name )
           
-          info[:edit]    = "/cltn/1"
+          info[:edit]    = "/collections/1"
           info[:size]    = cltn.count
           info[:indexes] = format_indexes( indexes ) if indexes and !indexes.empty?
         end
@@ -219,7 +255,7 @@ module Mongo3
         
     # =========================================================================
     private
-
+      
       # Connects to mongo given an environment
       # BOZO !! Auth... 
       def connect_for( env, &block )
