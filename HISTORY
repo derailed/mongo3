@@ -1,2 +1,8 @@
 0.0.1 - Initial Drop
   not much there yet...
+0.0.2 - 
+  Added mongo auth
+  Added collection/db views
+0.0.3 -
+  Added collection crud
+  Refactored view code
