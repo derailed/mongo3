@@ -177,26 +177,27 @@ module Mongo3
       config.each_pair do |env, info|
         node = Node.new( env, env, :dyna => true )
         root << node
-        if node.name == bm_env
-          connect_for( env ) do |con|      
-            count = 0
-            data  = { :dyna => true }
-            con.database_names.each do |db_name|
-              db      = con.db( db_name, :strict => true )
-              cltns   = db.collection_names.size  
-              db_node = Node.new( "#{env}_#{count}", "#{db_name}(#{cltns})", data.clone )
-              node << db_node
-              count += 1
-              if bm_db and db_node.name =~ /^#{bm_db}/
-                cltn_count = 0
-                data = { :dyna => false }
-                db.collection_names.each do |cltn_name|
-                  size = db[cltn_name].count
-                  cltn_node = Node.new( "#{db_name}_#{cltn_count}", "#{cltn_name}(#{size})", data.clone )
-                  db_node << cltn_node
-                  cltn_count += 1
-                end              
-              end
+        
+        next unless node.name == bm_env
+
+        connect_for( env ) do |con|      
+          count = 0
+          data  = { :dyna => true }
+          con.database_names.each do |db_name|
+            db      = con.db( db_name, :strict => true )
+            cltns   = db.collection_names.size  
+            db_node = Node.new( "#{env}_#{count}", "#{db_name}(#{cltns})", data.clone )
+            node << db_node
+            count += 1
+            if bm_db and db_node.name =~ /^#{bm_db}/
+              cltn_count = 0
+              data = { :dyna => false }
+              db.collection_names.each do |cltn_name|
+                size = db[cltn_name].count
+                cltn_node = Node.new( "#{db_name}_#{cltn_count}", "#{cltn_name}(#{size})", data.clone )
+                db_node << cltn_node
+                cltn_count += 1
+              end              
             end
           end
         end
@@ -209,7 +210,7 @@ module Mongo3
       path_name_tokens = path_names.split( "|" )
       env              = path_name_tokens[1]      
             
-      if db_request?( path_name_tokens )
+      if db_request?( path_name_tokens )        
         sub_tree = build_db_tree( parent_id, env )
       else
         db_name  = path_name_tokens.last        
@@ -272,7 +273,7 @@ module Mongo3
       def connect_for( env, &block )
         info = landscape[env]
         puts ">>> Connecting for #{env} -- #{info['host']}-#{info['port']}"
-        con = Mongo::Connection.new( info['host'], info['port'] )
+        con = Mongo::Connection.new( info['host'], info['port'], { :slave_ok => true } )
         
         if info['user'] and info['password']
           con.db( 'admin' ).authenticate( info['user'], info['password'] )

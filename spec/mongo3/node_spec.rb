@@ -35,6 +35,14 @@ describe Mongo3::Node do
     end
   end
   
+  it "should make a new node correctly" do
+    node = Mongo3::Node.make_node( "blee" )
+    node.name.should              == "blee"
+    node.oid.should               == "blee"
+    node.data[:path_ids].should   == "blee"
+    node.data[:path_names].should == "blee"
+  end
+  
   it "should create a node correctly" do
     @root.oid.should         == 0
     @root.name.should        == "root"
@@ -66,19 +74,29 @@ describe Mongo3::Node do
   end
   
   it "should set the path correctly" do
-    @cltns.first.data[:path].should == "root|env_0|db_0|cltn_0"
-    @dbs.last.data[:path].should    == "root|env_1|db_3"
-    @envs.first.data[:path].should  == "root|env_0"
-    @root.data[:path].should        be_nil
+    @cltns.first.data[:path_names].should == "root|env_0|db_0|cltn_0"
+    @dbs.last.data[:path_names].should    == "root|env_1|db_3"
+    @envs.first.data[:path_names].should  == "root|env_0"
+    @root.data[:path_names].should        be_nil
   end
   
   it "should dump to json correctly" do
-    @cltns.first.to_json.should == "{\"name\":\"cltn_0\",\"id\":102,\"children\":[],\"data\":{\"path\":\"root|env_0|db_0|cltn_0\"}}"
-    @dbs.first.to_json.should   == "{\"name\":\"db_0\",\"id\":102,\"children\":[{\"name\":\"cltn_0\",\"id\":102,\"children\":[],\"data\":{\"path\":\"root|env_0|db_0|cltn_0\"}},{\"name\":\"cltn_1\",\"id\":103,\"children\":[],\"data\":{\"path\":\"root|env_0|db_0|cltn_1\"}},{\"name\":\"cltn_2\",\"id\":104,\"children\":[],\"data\":{\"path\":\"root|env_0|db_0|cltn_2\"}},{\"name\":\"cltn_3\",\"id\":105,\"children\":[],\"data\":{\"path\":\"root|env_0|db_0|cltn_3\"}}],\"data\":{\"path\":\"root|env_0|db_0\"}}"
+    @cltns.first.to_json.should_not be_empty
+    @dbs.first.to_json.should_not   be_empty
   end
   
   it "should dump adjacencies correctly" do
-    @cltns.first.to_adjacencies.should == [{:adjacencies=>[], :name=>"cltn_0", :data=>{:path=>"root|env_0|db_0|cltn_0"}, :id=>102}]
-    @dbs.first.to_adjacencies.should   == [{:name=>"db_0", :adjacencies=>[102, 103, 104, 105], :data=>{:path=>"root|env_0|db_0"}, :id=>102}, {:name=>"cltn_0", :adjacencies=>[], :data=>{:path=>"root|env_0|db_0|cltn_0"}, :id=>102}, {:name=>"cltn_1", :adjacencies=>[], :data=>{:path=>"root|env_0|db_0|cltn_1"}, :id=>103}, {:name=>"cltn_2", :adjacencies=>[], :data=>{:path=>"root|env_0|db_0|cltn_2"}, :id=>104}, {:name=>"cltn_3", :adjacencies=>[], :data=>{:path=>"root|env_0|db_0|cltn_3"}, :id=>105}] 
+    item = @cltns.first.to_adjacencies
+    item.should have(1).item
+    item.first[:name].should == "cltn_0"
+    item.first[:id].should  == 102
+    
+    item = @dbs.first.to_adjacencies
+    item.should have(5).item
+    item.first[:name].should == 'db_0'
+    item.last[:name].should  == 'cltn_3'    
+    
+    # @dbs.first.to_adjacencies.should   == 
+    # [{:adjacencies=>[102, 103, 104, 105], :name=>"db_0", :id=>102, :data=>{:path_ids=>"0|100|102", :path_names=>"root|env_0|db_0"}}, {:adjacencies=>[], :name=>"cltn_0", :id=>102, :data=>{:path_ids=>"0|100|102|102", :path_names=>"root|env_0|db_0|cltn_0"}}, {:adjacencies=>[], :name=>"cltn_1", :id=>103, :data=>{:path_ids=>"0|100|102|103", :path_names=>"root|env_0|db_0|cltn_1"}}, {:adjacencies=>[], :name=>"cltn_2", :id=>104, :data=>{:path_ids=>"0|100|102|104", :path_names=>"root|env_0|db_0|cltn_2"}}, {:adjacencies=>[], :name=>"cltn_3", :id=>105, :data=>{:path_ids=>"0|100|102|105", :path_names=>"root|env_0|db_0|cltn_3"}}]
   end
 end

@@ -1,14 +1,15 @@
 require 'json'
+require 'mongo/util/ordered_hash'
 
 module Mongo3
   class Node
     attr_accessor :oid, :name, :children, :data, :parent
     
-    def initialize( oid, name, data={} )
+    def initialize( oid, name, data=nil )
       @oid      = oid
       @name     = name
       @children = []
-      @data     = data || {}
+      @data     = data || OrderedHash.new
       @parent   = nil
     end
     
@@ -23,14 +24,11 @@ module Mongo3
       update_paths( new_one )
     end
 
-    def update_paths( node )
-      node.data[:path_names] = node.path( :name )
-      node.data[:path_ids]   = node.path( :oid )
-      node.children.each do |child|
-        child.update_paths( child )
-      end
-    end  
-      
+    # def find( path_name )
+    #   tokens = path_name.split
+    #   self.children.each do
+    # end
+    
     # convert a tree node to a set of adjacencies
     def to_adjacencies
       root_level = { :id => self.oid, :name => self.name, :data => self.data, :adjacencies => [] } 
@@ -42,27 +40,14 @@ module Mongo3
       cltn
     end
     
-    def path( accessor=:oid )
-      path = []
-      traverse( path, self, accessor )
-      path.reverse.join( "|" )
-    end
-    
-    def traverse( path, node, accessor )
-      path << node.send( accessor ).gsub( /\(\d+\)/, "" )
-      if node.parent
-        traverse( path, node.parent, accessor )
-      end
-    end
-    
     # converts to json
     def to_json(*a)
-      {
-        'id'         => oid,
-        'name'       => self.name,
-        'children'   => self.children,
-        'data'       => self.data
-      }.to_json(*a)
+      hash = OrderedHash.new
+      hash[:id]       = oid
+      hash[:name]     = self.name
+      hash[:children] = self.children
+      hash[:data]     = self.data 
+      hash.to_json(*a)
     end
 
     # Debug...
@@ -79,6 +64,29 @@ module Mongo3
         puts '  '*level + "%-#{20-level}s (%d) [%s] -- %s" % [adj[:id], adj[:adjacencies].size, adj[:name], (adj[:data] ? adj[:data].inspect : 'N/A' )]
       end
     end
+
+    # =========================================================================
+    private
     
+      def update_paths( node )
+        node.data[:path_names] = node.send( :path, :name )
+        node.data[:path_ids]   = node.send( :path, :oid )
+        node.children.each do |child|
+          child.send( :update_paths, child )
+        end
+      end  
+          
+      def path( accessor=:oid )
+        path = []
+        traverse( path, self, accessor )
+        path.reverse.join( "|" )
+      end
+    
+      def traverse( path, node, accessor )
+        path << node.send( accessor ).to_s.gsub( /\(\d+\)/, "" )
+        if node.parent
+          traverse( path, node.parent, accessor )
+        end
+      end 
   end
 end

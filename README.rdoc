@@ -36,6 +36,8 @@
 
 == DEPENDENCIES
 
+* At this time mongo3 only is supported on ruby 1.8 and sinatra 0.9.4
+
 * mongo + mongo_ext
 * agnostic-will_paginate
 * memcache-client

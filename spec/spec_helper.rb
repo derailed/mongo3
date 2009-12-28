@@ -1,6 +1,9 @@
 require 'rubygems'
 require 'rack'
-# require 'rack/test'
+require 'rack/test'
+require 'mongo'
+gem 'agnostic-will_paginate'
+require 'will_paginate/collection'
 
 require File.join(File.dirname(__FILE__), %w[.. lib mongo3])
 

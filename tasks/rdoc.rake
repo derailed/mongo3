@@ -1,5 +1,5 @@
 require 'rake/rdoctask'
-require 'darkfish-rdoc'
+# require 'darkfish-rdoc'
 
 namespace :doc do
 
@@ -28,7 +28,7 @@ namespace :doc do
     rd.options << "-t #{title}"
     rd.options << "-SHN"
     rd.options << "-f"
-    rd.options << "darkfish"    
+    # rd.options << "darkfish"    
     rd.options.concat(rdoc.opts)
   end
 

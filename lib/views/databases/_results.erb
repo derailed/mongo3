@@ -16,11 +16,10 @@
       <tr id="<%=count%>" valign="top">
         <td id="<%=count%>">
           <img class="delete" id="<%=path%>" rel="<%=count%>" src="/images/delete.png" title="drop this collection"/>
-          <img class="wait" id="wait_<%=count%>" src="/images/loading.gif"></img>          
-        </td>          
-        <% cltn.each_pair do |k, v| %>
-          <td align="<%=align_for( v )%>"><%= format_number(v) %></td>
-        <% end %>
+          <img class="wait" id="wait_<%=count%>" src="/images/loading.gif"></img>
+        </td>
+        <td><a href="/databases/collection/<%=cltn[:name]%>/"><%= cltn[:name] %></a></td>
+        <td align="<%=align_for( cltn[:count] )%>"><%= format_number(cltn[:count]) %></td>
       </tr>
     <% count+=1;end %>
   </tbody>

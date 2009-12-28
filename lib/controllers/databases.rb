@@ -12,6 +12,17 @@ module Databases
     erb :'databases/list'
   end
   
+  # ---------------------------------------------------------------------------
+  get "/databases/collection/:name/" do
+    cltn_name  = params[:name]
+    path_names = session[:path_names]
+    path_ids   = session[:path_ids]
+    
+    update_paths!( path_ids + "|" + cltn_name, path_names + "|" + cltn_name )
+
+    redirect "/collections/1"
+  end
+    
   # ---------------------------------------------------------------------------  
   get "/databases/drop/" do
     path_names = session[:path_names]
