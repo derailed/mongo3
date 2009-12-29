@@ -31,8 +31,11 @@
 
 * Provide support for db authentication [done]
 * Ability to drilldown in collections and query for content [done]
-* CRUD on dbs, collections, indexes, users
-* Support for managing shards and replication
+* CRUD on dbs, collections, indexes [done]
+* Administer users
+* Collection rename
+* Manage logs
+* Support for shards and replication
 
 == DEPENDENCIES
 
@@ -41,6 +44,7 @@
 * mongo + mongo_ext
 * agnostic-will_paginate
 * memcache-client
+* sinatra
 
 == INSTALL:
   
