@@ -110,23 +110,23 @@ describe Mongo3::Connection do
     
     it "should build a adjacencies from cltn correctly" do
       adjs = @mongo3.build_sub_tree( 200, "home|test|mongo3_test_db" ).to_adjacencies
-      adjs.size.should == 4
+      adjs.size.should == 3
       adjs.first[:name].should == 'mongo3_test_db'
       adjs.first[:id].should   == 200
-      adjs.first[:adjacencies].should have(3).items
+      adjs.first[:adjacencies].should have(2).items
     end    
     
     it "should build a partial tree correctly" do
       root = @mongo3.build_partial_tree( "home|test|mongo3_test_db" )
-      root.find( "test_2" ).children.should have(3).items
+      root.find( "test_2" ).children.should have(0).items
     end
   end
 
   describe "paginate db" do
     it "should paginate a db correctly" do
       rows = @mongo3.paginate_db( "home|test|mongo3_test_db" )
-      rows.size.should == 3
-      rows.total_entries.should == 3
+      rows.size.should == 2
+      rows.total_entries.should == 2
     end    
   end  
   
@@ -143,4 +143,37 @@ describe Mongo3::Connection do
       rows.total_entries.should == 4
     end    
   end  
+  
+  describe "indexes" do
+    it "should list indexes correctly" do
+      indexes = @mongo3.indexes_for( "home|test|mongo3_test_db|test1_cltn" )
+      indexes.should_not be_nil
+      indexes.keys.should have(1).item
+      indexes.keys.first.should == '_id_'
+    end
+    
+    it "should add an index correctly" do
+      indexes = @mongo3.indexes_for( "home|test|mongo3_test_db|test1_cltn" )
+      before = indexes.size
+      @mongo3.create_index( "home|test|mongo3_test_db|test1_cltn", [[:name, Mongo::ASCENDING]], {:unique => 1} )
+      indexes = @mongo3.indexes_for( "home|test|mongo3_test_db|test1_cltn" )
+      indexes.size.should == before + 1
+    end
+
+    it "should add a compound index correctly" do
+      indexes = @mongo3.indexes_for( "home|test|mongo3_test_db|test1_cltn" )
+      before = indexes.size
+      @mongo3.create_index( "home|test|mongo3_test_db|test1_cltn", [[:name, Mongo::ASCENDING], [:_id, Mongo::DESCENDING]], {:unique => 1} )
+      indexes = @mongo3.indexes_for( "home|test|mongo3_test_db|test1_cltn" )
+      indexes.size.should == before + 1
+    end
+    
+    it "should drop an index correctly" do
+      indexes = @mongo3.indexes_for( "home|test|mongo3_test_db|test1_cltn" )
+      before = indexes.size
+      @mongo3.drop_index( "home|test|mongo3_test_db|test1_cltn", "name_1"  )
+      indexes = @mongo3.indexes_for( "home|test|mongo3_test_db|test1_cltn" )
+      indexes.size.should == before - 1      
+    end
+  end
 end

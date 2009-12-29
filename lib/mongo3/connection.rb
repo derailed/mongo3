@@ -332,7 +332,7 @@ module Mongo3
       # BOZO !! Auth... 
       def connect_for( env, &block )
         info = landscape[env]
-        puts ">>> Connecting for #{env} -- #{info['host']}-#{info['port']}"
+        # puts ">>> Connecting for #{env} -- #{info['host']}-#{info['port']}"
         con = Mongo::Connection.new( info['host'], info['port'], { :slave_ok => true } )
         
         if info['user'] and info['password']
