@@ -1,8 +1,12 @@
-<div class="cltn">
-  <div class="title"><%=@title%></div>
-  <a class="back" href="<%=@back_url%>">&laquo;&nbsp;back</a>
+<%= zone_locator %>
 
+<div class="cltn">
+  <a class="back" href="<%=@back_url%>">&laquo;&nbsp;back</a>  
+  <div class="title"><%=title_for( session[:path_names] )%></div>  
+</div>
+
+<div class="cltn" style="padding:10px;">
   <div id="results">
     <%= partial :'databases/results'%>
   </div>
-<div>  
+</div>  

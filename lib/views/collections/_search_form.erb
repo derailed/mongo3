@@ -1,18 +1,17 @@
 <script src="/javascripts/jquery.example.js" type="text/javascript"></script>
     
-<form id="search" onsubmit="search_submit();return false;" action="/collections/search/" method="post" style="text-align:center;margin:10px">
+<form id="search" onsubmit="search_submit();return false;" action="/collections/search/" method="post" style="text-align:center">
   <fieldset>
     <input id="search" type="text" name="search" class="search" value="<%=@query%>"/>
     <button type="submit" id="submit_button" class="button search" style="display:none">search</button>
     <img id="search_load" src="/images/loading.gif" style="width:25px;height:25px;vertical-align:sub;display:none"></img>
   </fieldset>  
-  <fieldset style="">
-  </fieldset>
 </form>
 
 <script>
  $( function() {
    $('input#search').example("{'name':'franky'} | [['count',-1]]", { className: 'no_input' } );
+   $('input#search').hover( function() { $(this).css( "border-color", "#92b948") }, function() { $(this).css( "border-color", "#434343") })
  });
 
  function search_submit()

@@ -1,8 +1,10 @@
-$('div.flash').html( "<%=escape_javascript(partial(:'shared/flash'))%>" );
-$('div.flash').show();
-<% if @flash[:error] %>
-  $('div.flash').attr( 'class', 'flash flash_error' );
-<% else %>
+<% if @flash %>
+  $('div.flash').html( "<%=escape_javascript(partial(:'shared/flash'))%>" );
+  $('div.flash').show();
+  <% if @flash[:error] %>
+    $('div.flash').attr( 'class', 'flash flash_error' );
+  <% else %>
     $('div.flash').attr( 'class', 'flash flash_info' );
+  <% end %>
+  $('div.flash').fadeOut( 3000 );
 <% end %>
-$('div.flash').fadeOut( 3000 );

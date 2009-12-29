@@ -2,32 +2,37 @@
   <%= page_entries_info @cltns, :entry_name => 'item' %>
 </div>
 
-<table id="cltn" class="cltn" border="0" cellpadding="10" cellspacing="20">
-  <thead>
-    <th width="2%">&nbsp;</th>
-    <% cols = @cltns.first.keys %>
-    <% cols.each do |col| %>
-      <th align="<%=align_for( @cltns.first[col] )%>"><%=col%></th>
-    <% end %>
-  </thead>
-  <tbody>
-    <% count = 0; @cltns.each do |cltn| %>
-      <% path = "#{session[:path_names]}|#{cltn[:name]}"%>
-      <tr id="<%=count%>" valign="top">
-        <td id="<%=count%>">
-          <img class="delete" id="<%=path%>" rel="<%=count%>" src="/images/delete.png" title="drop this collection"/>
-          <img class="wait" id="wait_<%=count%>" src="/images/loading.gif"></img>
-        </td>
-        <td><a href="/databases/collection/<%=cltn[:name]%>/"><%= cltn[:name] %></a></td>
-        <td align="<%=align_for( cltn[:count] )%>"><%= format_number(cltn[:count]) %></td>
-      </tr>
-    <% count+=1;end %>
-  </tbody>
-</table>
-
-<div id="links">
-  <%= will_paginate @cltns, :params => { :url => "/databases" } %>
-</div>
+<% unless @cltns.empty? %>
+  <div class="borders" style="padding:10px">
+    <table id="cltn" class="cltn" border="0" cellpadding="10" cellspacing="20">
+      <thead>
+        <th width="2%">&nbsp;</th>
+        <% cols = @cltns.first.keys %>
+        <% cols.each do |col| %>
+          <th align="<%=align_for( @cltns.first[col] )%>"><%=col%></th>
+        <% end %>
+      </thead>
+      <tbody>
+        <% count = 0; @cltns.each do |cltn| %>
+          <% path = "#{session[:path_names]}|#{cltn[:name]}"%>
+          <tr id="<%=count%>" valign="top">
+            <td id="<%=count%>">
+              <img class="delete" id="<%=path%>" rel="<%=count%>" src="/images/delete.png" title="drop this collection"/>
+              <img class="wait" id="wait_<%=count%>" src="/images/loading.gif"></img>
+            </td>
+            <td><a href="/databases/collection/<%=cltn[:name]%>/"><%= cltn[:name] %></a></td>
+            <td align="<%=align_for( cltn[:count] )%>"><%= format_number(cltn[:count]) %></td>
+          </tr>
+        <% count+=1;end %>
+      </tbody>
+    </table>
+  </div>
+  <div id="links">
+    <%= will_paginate @cltns, :params => { :url => "/databases" } %>
+  </div>
+<% else %>
+  <div class="no_items">Oh snap! No collections found...</span>
+<% end %>
 
 <script>
   $( function() {

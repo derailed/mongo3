@@ -6,7 +6,6 @@ module Databases
     path_names = session[:path_names]
           
     @cltns     = options.connection.paginate_db( path_names, page, 10 )
-    @title     = title_for( path_names )    
     @back_url  = "/explore/back"
     
     erb :'databases/list'
@@ -22,7 +21,7 @@ module Databases
 
     redirect "/collections/1"
   end
-    
+      
   # ---------------------------------------------------------------------------  
   get "/databases/drop/" do
     path_names = session[:path_names]

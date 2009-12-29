@@ -2,22 +2,25 @@
   <%= partial :'explore/crumbs' %>
 </div>
 
-<div id="landscape"></div>
+<div id="landscape" class="borders"></div>
 
-<div id="right">
+<div id="right" class="borders">
   <div id="info"></div>
   <span id="log"></span>  
 </div>
 
-<div id="details" class="overlay">
+<div id="details" class="borders overlay">
   <div id="wrap"></div>
 </div>
 
 <script>
+  function remove_node( node_id ) {
+    ht.op.removeNode( node_id, { type: 'fade:seq', duration: 1000, transition: Trans.Quart.easeOut } );
+  }
+  
   function center( node_id ) {
     ht.onClick( node_id, {
-      Move:      { enable: true, offsetX: 30, offsetY: 5 },
-      onComplete: function() { update_info( node_id ); } });
+      Move:      { enable: true, offsetX: 30, offsetY: 5 } });
   }
 
   function morphit( id, json ) {
@@ -26,8 +29,7 @@
       type:       'fade:con', 
       delay:      10, 
       hideLabels: false, 
-      transition: Trans.Quart.easeOut,
-      onComplete: function() { update_info(id); } 
+      transition: Trans.Quart.easeOut
     });
     Log.write( "plotting..." );
   }
@@ -111,7 +113,6 @@
              ht.onClick( node.id, {
                Move:      { enable: true, offsetX: 30, offsetY: 5 },
                onComplete: function() { 
-                 update_info( node.id ); 
                  $.ajax( {
                     dataType: 'script', 
                     type:     'GET', 
@@ -164,83 +165,13 @@
     },
         
     onAfterCompute: function() {
-      Log.write("loaded");
+      Log.write("done");
     } });
     
     ht.loadJSON( eval( <%=@root.to_json%> ) );
     ht.controller.onAfterCompute(); 
     ht.refresh();
-    
-    if( '<%=@center%>'.length )
-      update_info( '<%=@center%>' );
-    else
-      update_info( 'home' );
-  }
 
-  function update_info(node_id)
-  {
-    var node = null;  
-    if( node_id )
-      node = Graph.Util.getNode(ht.graph, node_id);                                        
-    else
-      node = Graph.Util.getClosestNodeToOrigin(ht.graph, "pos");
-  
-    var html    = "";
-    var depth   = node.data.path_ids.split( '|' ).length
-    var legends = ['', 'environments', 'databases', 'collections']
-      
-    var children      = [];
-    var children_hash = {};
-    Graph.Util.eachAdjacency( node, function(adj) {      
-      child = adj.nodeTo;
-      if( parent ) {
-        if( child.name != parent.name ) {
-          children_hash[child.name] = child;
-          children.push( child.name );
-        }
-      }
-      else {
-        children_hash[child.name] = child;
-        children.push( child.name );
-      }
-    });
-    children = children.sort();
-  
-    html += "<span class=\"what\">" + legends[depth] + "(" + children.length + ")</span>";  
-    html += "<p style='padding:5px 10px;text-align:left;color:#c1c1c1'>";
-  
-    var buff = "<ul style='font-size:0.4em'>";  
-    for( var i in children ) {
-      var node = children_hash[children[i]];
-      buff += "<li>";
-      buff += make_link( node );
-      buff += "</li>";
-    }  
-    html += "</ul>" + buff;
-    html += "</p>";
-    $('div#info').html( html );
-  
-    $('a.info[rel]').overlay( 
-      { top:    '15%',
-        expose: '#1c1c1c',
-        onBeforeLoad: function() {
-          var wrap = this.getContent().find( 'div#wrap' );
-          wrap.load( this.getTrigger().attr( 'href' ) );
-        }
-      });   
-  }
-
-  function make_link( node )
-  {
-    return "<a rel=\"div#details\" class=\"info\" href=\"/explore/show/" + node.data.path_ids + "/" + node.data.path_names + "\">" + node.name + "</a>";  
-  }
-
-  function refresh_data( url, path, name )
-  {
-    $.ajax( {
-      dataType: 'script', 
-      type:     'GET', 
-      url:      url + "/" + path + "/" + name
-    });
+    $('div#info').html( "<%=escape_javascript( partial( :'explore/node_info' ) )%>" )    
   }
 </script>

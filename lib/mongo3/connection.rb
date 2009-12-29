@@ -5,13 +5,60 @@ module Mongo3
       @config_file = config_file
     end
 
-    def drop_db( path_names )
+    # drop a database using context and db name
+    def drop_database( path_names, db_name )
       path_name_tokens = path_names.split( "|" )
       env              = path_name_tokens[1]      
+      connect_for( env ) do |con|
+        con.drop_database( db_name )
+      end      
+    end
+    
+    def drop_db( path_names )
+      path_name_tokens = path_names.split( "|" )
+      env              = path_name_tokens[1]
       connect_for( env ) do |con|
         db_name   = path_name_tokens.pop
         con.drop_database( db_name )
       end
+    end
+
+    def indexes_for( path_names )
+      path_name_tokens = path_names.split( "|" )
+      env              = path_name_tokens[1]
+      indexes          = {}
+      connect_for( env ) do |con|
+        cltn_name = path_name_tokens.pop
+        db_name   = path_name_tokens.pop
+        db        = con.db( db_name )
+        cltn      = db[cltn_name]
+        indexes   = cltn.index_information
+      end
+      indexes
+    end
+
+    def drop_index( path_names, index )
+      path_name_tokens = path_names.split( "|" )
+      env              = path_name_tokens[1]      
+      connect_for( env ) do |con|
+        cltn_name = path_name_tokens.pop
+        db_name   = path_name_tokens.pop
+        db        = con.db( db_name )
+        cltn      = db[cltn_name]
+        cltn.drop_index( index )
+      end
+    end
+    
+    def create_index( path_names, index, constraints )
+      path_name_tokens = path_names.split( "|" )
+      env              = path_name_tokens[1]      
+      connect_for( env ) do |con|
+        cltn_name = path_name_tokens.pop
+        db_name   = path_name_tokens.pop
+        db        = con.db( db_name )
+        cltn      = db[cltn_name]
+        cltn.create_index( index, constraints ? constraints['unique'] == 1 : false )
+      end      
     end
 
     def drop_cltn( path_names )
@@ -75,7 +122,7 @@ module Mongo3
           # info[:links][:drop]   = "/databases/drop/"
           info[:size]        = to_mb( con.database_info[db_name] )
           info[:node]        = db.nodes
-          info[:collections] = db.collection_names.size
+          info[:collections] = collection_names( db ).size
           info[:error]       = db.error
           info[:last_status] = db.last_status
         end
@@ -104,7 +151,7 @@ module Mongo3
       connect_for( env ) do |con|
         db_name = path_name_tokens.pop
         db      = con.db( db_name )
-        cltn    = db.collection_names.sort
+        cltn    = collection_names(db).sort
         
         list = WillPaginate::Collection.create( page, per_page, cltn.size ) do |pager|
           offset = (page-1)*per_page
@@ -131,15 +178,17 @@ module Mongo3
         cltn_name = path_name_tokens.pop
         db_name   = path_name_tokens.pop
         db        = con.db( db_name )
-        cltn      = db[cltn_name]
+        cltn      = db[cltn_name]          
+        count     = cltn.find( query_params.first ).count
         
-        list = WillPaginate::Collection.create( page, per_page, cltn.count ) do |pager|
+        list = WillPaginate::Collection.create( page, per_page, count ) do |pager|
           offset = (page-1)*per_page
-          sort   = query_params.last.empty? ? [ ['_id', Mongo::DESCENDING] ] : query_params.last
-          pager.replace( cltn.find( query_params.first, 
+          sort   = query_params.last.empty? ? [ ['_id', Mongo::DESCENDING] ] : query_params.last        
+          results = cltn.find( query_params.first, 
             :sort  => sort,
             :skip  => offset, 
-            :limit => per_page ).to_a)
+            :limit => per_page ).to_a          
+          pager.replace( results )
         end        
       end
       list
@@ -183,16 +232,16 @@ module Mongo3
         connect_for( env ) do |con|      
           count = 0
           data  = { :dyna => true }
-          con.database_names.each do |db_name|
+          database_names( con ).each do |db_name|
             db      = con.db( db_name, :strict => true )
-            cltns   = db.collection_names.size  
-            db_node = Node.new( "#{env}_#{count}", "#{db_name}(#{cltns})", data.clone )
+            cltns   = collection_names( db )  
+            db_node = Node.new( "#{env}_#{count}", "#{db_name}(#{cltns.size})", data.clone )
             node << db_node
             count += 1
             if bm_db and db_node.name =~ /^#{bm_db}/
               cltn_count = 0
               data = { :dyna => false }
-              db.collection_names.each do |cltn_name|
+              cltns.each do |cltn_name|
                 size = db[cltn_name].count
                 cltn_node = Node.new( "#{db_name}_#{cltn_count}", "#{cltn_name}(#{size})", data.clone )
                 db_node << cltn_node
@@ -216,7 +265,7 @@ module Mongo3
         db_name  = path_name_tokens.last        
         sub_tree = build_cltn_tree( parent_id, env, db_name )
       end
-      sub_tree.to_adjacencies
+      sub_tree
     end
         
     # Connects to host and spews out all available dbs
@@ -231,9 +280,9 @@ module Mongo3
       
         count = 0
         data  = { :dyna => true }
-        con.database_names.each do |db_name|
+        database_names( con ).each do |db_name|
           db    = con.db( db_name, :strict => true )
-          cltns = db.collection_names.size  
+          cltns = collection_names( db ).size  
           node  = Node.new( "#{env}_#{count}", "#{db_name}(#{cltns})", data.clone )
           sub_root << node
           count += 1
@@ -255,7 +304,7 @@ module Mongo3
       
         count = 0
         data = { :dyna => false }
-        db.collection_names.each do |cltn_name|
+        collection_names( db ).each do |cltn_name|
           size = db[cltn_name].count
           node = Node.new( "#{db_name}_#{count}", "#{cltn_name}(#{size})", data.clone )
           sub_root << node
@@ -267,6 +316,17 @@ module Mongo3
         
     # =========================================================================
     private
+      
+      def collection_names( db )
+        excludes = %w[system.indexes]
+        db.collection_names - excludes 
+      end
+      
+      # Filters out system dbs
+      def database_names( con )
+        excludes = %w[admin local slave]
+        con.database_names - excludes
+      end
       
       # Connects to mongo given an environment
       # BOZO !! Auth... 

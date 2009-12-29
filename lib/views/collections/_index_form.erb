@@ -1,0 +1,35 @@
+<script src="/javascripts/jquery.example.js" type="text/javascript"></script>
+    
+<form id="index" onsubmit="index_submit();return false;" action="/collections/create_index/" method="post" style="text-align:center">
+  <fieldset>
+    <input id="index" type="text" name="index" class="search" value=""/>
+    <button type="submit" id="submit_button" class="button search" style="display:none">create</button>
+    <img id="create_load" src="/images/loading.gif" style="width:25px;height:25px;vertical-align:sub;display:none"></img>
+  </fieldset>  
+</form>
+
+<script>
+ $( function() {
+   $('input#index').example("[['field1', 1], ['field2', -1]] | {'unique':1}", { className: 'no_input' } );
+   $('input#index').hover( 
+     function() { $(this).css( "border-color", "#92b948") }, 
+     function() { $(this).css( "border-color", "#434343") }
+   );
+ });
+
+ function index_submit()
+ {
+   $.ajax({
+     data:       $.param( $("form#index").serializeArray() ),
+     dataType:   'script',
+     type:       'post',
+     url:        '/collections/create_index/',
+     beforeSend: function() { 
+       $('img#create_load').show(); 
+     },
+     complete:   function() { 
+       $('img#create_load').hide(); 
+     }     
+   }); 
+ }
+</script>

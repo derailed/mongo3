@@ -1,0 +1,54 @@
+<%= partial :'collections/index_form' %>
+
+<div class="borders" style="padding:10px">
+  <table id="indexes" class="cltn" border="0" cellpadding="10" cellspacing="20">
+    <thead>
+      <th width="2%">&nbsp;</td>
+      <th>Name</th>
+      <th>Settings</th>      
+    </thead>
+    <tbody>
+      <% @indexes.keys.sort.each do |name| %>
+        <tr id="<%=name%>" valign="top">
+          <td id="<%=name%>">
+            <img class="del_index" id="<%=name%>" src="/images/delete.png" title="delete this index"/>
+            <img class="wait" id="wait_<%=name%>" src="/images/loading.gif"></img>
+          </td>
+          <td><%=name%></td>
+          <% buff = [];@indexes[name].each do |pair| %>
+            <% buff << format_index( pair )%>
+          <% end %>
+          <td><%= buff.join( ", " ) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  $( function() {
+    $("table#indexes tr" ).hover( 
+      function() { 
+        $(this).addClass( 'highlight' );
+        $("td#" + $(this).attr('id') + " img.del_index" ).show();
+      }, 
+      function() { 
+        $(this).removeClass( 'highlight' );      
+        $("td#" + $(this).attr('id') + " img.del_index" ).hide();
+      });
+    $( "img.del_index" ).click( function() {
+      var id = $(this).attr('id');
+      $.ajax({
+        data:     {id: id},
+        dataType: 'script',
+        type:     'post',
+        url:      '/collections/drop_index/',
+        beforeSend: function() { $('img#_wait_' + id ).show(); },
+        complete:   function() { 
+          $('img#_wait_' + id ).hide(); 
+          $('tr#' + id ).fadeOut();
+        }
+      }); 
+    });    
+  });
+</script>

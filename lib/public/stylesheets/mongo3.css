@@ -19,16 +19,24 @@ body {
   margin:           0;
 }
 
+img {
+  border:         none;
+  vertical-align: text-top;
+}
+
+/* Flash */
 div.flash {
   display:                        none;
+  width:                          95%;
   padding:                        10px;
-  font-size:                      .8em;
+  margin:                         20px 0 0px 300px;
+  font-size:                      .5em;
   color:                          #fff;
   border:                         1px #92b948 solid;
-  -moz-border-radius-bottomleft:  0px;
-  -moz-border-radius-topleft:     20px;
-  -moz-border-radius-bottomright: 20px;
-  -moz-border-radius-topright:    0px;  
+  -moz-border-radius-bottomleft:  20px;
+  -moz-border-radius-topleft:     0px;
+  -moz-border-radius-bottomright: 0px;
+  -moz-border-radius-topright:    20px;  
 }
 div.flash_error {
   color:  #f00;  
@@ -43,10 +51,6 @@ div.flash_info {
   margin:        5px auto;
   width:         950px;
   overflow:      none;
-}
-
-span#log {
-  color: #ff9d2a;
 }
 
 div#logo {
@@ -117,28 +121,6 @@ p.title span{
 /* ---------------------------------------------------------------------------- */
 /* Common */
 
-div.item {
-  border-top: 1px #1c1c1c solid;
-  padding:    10px 0px 0px 0px;
-  height:     100px;
-  clear:      both;
-  width:      100%;
-}
-
-div.item .tag {
-  float:left;
-}
-
-div.item .lock {
-  float: right;
-  width: 5%;
-  color: #434343;
-}
-
-div.selected {
-  background: transparent url(/images/li_select.png) repeat-x;
-  cursor: pointer;
-}
 ul.host_info {
   font-size: 0.5em;
   color:     #c1c1c1;
@@ -146,7 +128,7 @@ ul.host_info {
 }
 span {
   color:     #c1c1c1;
-  font-size: 0.5em;
+  font-size: 1.0em;
 }
 p.heading {
   width: 80%;
@@ -168,11 +150,6 @@ div#details {
   font-size:                      0.5em;
   color:                          #fff;
   background:                     #1c1c1c;
-  border:                         1px #92b948 solid;
-  -moz-border-radius-bottomleft:  7px;
-  -moz-border-radius-topleft:     7px;
-  -moz-border-radius-bottomright: 7px;
-  -moz-border-radius-topright:    7px;  
 }
 
 .overlay {
@@ -183,10 +160,6 @@ div#details {
   color:                          #fff;
   width:                          650px;
   min-height:                     400px;
-  -moz-border-radius-bottomleft:  7px;
-  -moz-border-radius-topleft:     7px;
-  -moz-border-radius-bottomright: 7px;
-  -moz-border-radius-topright:    7px;  
   -moz-box-shadow:                0 0 90px 5px #000;
   -webkit-box-shadow:             0 0 90px #000;
 } 
@@ -206,50 +179,55 @@ div#details {
 div.scrollable { 
   position:  relative; 
   overflow:  hidden; 
-  height:    440px; 
+  height:    445px; 
+  width:     255px;
 } 
- 
-div.scrollable div.items { 
-  width:800px;
-  position:absolute;  
-  height:20000em; 
+div.scrollable div.items {
+  width:    255px;
+  position: absolute;  
+  height:   20000em; 
 }
 
 #actions {
-	width:800px;
-	margin:30px 0 10px 0;	
+  font-size: 0.5em;
+  width:     255px;
+  height:    15px;
+	margin:    7px 0 1px 0;	
 }
-
 #actions a {
 	font-size:       0.6em;
 	text-decoration: none;
 	cursor:          pointer;
 	color:           #c1c1c1;
 }
-
 #actions a:hover {
 	text-decoration: underline;
 	color:           #92b948;
 }
-
 .disabled {
 	visibility:hidden;		
 }
-
 .nextPage {
 	float:right;
 }	
 
+/* Commons */
+div.borders {
+  -moz-border-radius-bottomleft:      7px;
+  -moz-border-radius-topleft:         7px;
+  -moz-border-radius-bottomright:     7px;
+  -moz-border-radius-topright:        7px;  
+  -webkit-border-top-left-radius:     7px;
+  -webkit-border-top-right-radius:    7px;
+  -webkit-border-bottom-right-radius: 7px;
+  -webkit-border-bottom-left-radius:  7px;
+  border:                             1px #92b948 solid;  
+}
 
 /* Explorer css */
 div#landscape {
   width:                          615px;
   height:                         550px;
-  -moz-border-radius-bottomleft:  7px;
-  -moz-border-radius-topleft:     7px;
-  -moz-border-radius-bottomright: 7px;
-  -moz-border-radius-topright:    7px;  
-  border:                         1px #92b948 solid;
   float:                          left;
 }
 
@@ -258,11 +236,6 @@ div#right {
   padding:                        10px;
   width:                          254px;
   height:                         530px;
-  -moz-border-radius-bottomleft:  7px;
-  -moz-border-radius-topleft:     7px;
-  -moz-border-radius-bottomright: 7px;
-  -moz-border-radius-topright:    7px;  
-  border:                         1px #92b948 solid;
 }
 
 
@@ -333,13 +306,16 @@ fieldset.check {
   width:  20%;
 }
 
+p.ctx {
+  font-size:  0.7em;
+  text-align: right;
+}
+p.ctx span {
+  color: #92b948;
+} 
+
 div.table {
-  padding:                        10px;
-  -moz-border-radius-bottomleft:  7px;
-  -moz-border-radius-topleft:     7px;
-  -moz-border-radius-bottomright: 7px;
-  -moz-border-radius-topright:    7px;  
-  border:                         1px #92b948 solid;    
+/*  padding: 10px;*/
 }
 
 table.cltn {
@@ -371,18 +347,37 @@ div.cltn div#links {
   text-align: center;
 }
 
+/* Indexes... */
+div#indexes {
+  margin: 10px 0px;
+}
+fieldset.sep {
+  margin-top: 10px;
+  padding:    0 0 0 20px;
+  border-top: 1px #434343 solid;
+}
+fieldset.sep legend {
+  color:     #fff;
+  padding:   0 5px;
+  font-size: 1.2em;
+}
+img.del_index {
+  display:none;
+}
+
 input.search {
-  background:                     #fff url(/images/search.png) no-repeat 2px 6px;  
-  width:                          80%;
+  background:                     transparent url(/images/search.png) no-repeat 2px 6px;  
+  width:                          96%;
   border:                         2px #434343 solid;
-  -moz-border-radius-bottomleft:  5px;
-  -moz-border-radius-bottomright: 5px;
-  -moz-border-radius-topleft:     5px;
-  -moz-border-radius-topright:    5px;   
+  -moz-border-radius-bottomleft:  0px;
+  -moz-border-radius-bottomright: 10px;
+  -moz-border-radius-topleft:     10px;
+  -moz-border-radius-topright:    0px;
   height:                         25px;
   font-size:                      1.2em;
-  color:                          #434343;
+  color:                          #92b948;
   padding:                        5px 0px 0px 20px;
+  margin:                         5px 5px;
 }
 
 button {
@@ -451,6 +446,7 @@ img.wait {
 }
 
 .modal {
+  font-size:             0.6em;
 	background-color:      #212021;
 	display:               none;
 	width:                 350px;
@@ -462,4 +458,19 @@ img.wait {
 	-webkit-border-radius: 6px;
 	-moz-box-shadow:       0 0 20px #92b948;
 	-webkit-box-shadow:    0 0 20px #92b948;
+}
+
+/* Node details */
+div#wrap {
+  font-size: 0.7em;
+}
+
+/* Node info */
+span#log {
+  color:     #92b948;
+  font-size: 0.5em;
+}
+
+div#info {
+  min-height: 520px;
 }

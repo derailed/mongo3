@@ -24,11 +24,18 @@ module Mongo3
       update_paths( new_one )
     end
 
-    # def find( path_name )
-    #   tokens = path_name.split
-    #   self.children.each do
-    # end
-    
+    def find( node_id )
+      _find( self, node_id )
+    end
+
+    def _find( node, node_id )      
+      return node if node.oid == node_id
+      unless node.children.empty?
+        node.children.each { |c| found = _find( c, node_id ); return found if found }
+      end
+      nil
+    end
+          
     # convert a tree node to a set of adjacencies
     def to_adjacencies
       root_level = { :id => self.oid, :name => self.name, :data => self.data, :adjacencies => [] } 

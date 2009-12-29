@@ -1,18 +1,30 @@
+<%=zone_locator%>
+
 <div class="cltn">
-  <div class="title"><%=@title%></div>
   <a class="back" href="<%=@back_url%>">&laquo;&nbsp;back</a>
   
+  <div class="title"><%=title_for( session[:path_names] )%></div>
+    
   <div id="mgmt_actions">
     <img id="action_load" src="/images/loading.gif" style="width:25px;height:25px;vertical-align:sub;display:none"></img>        
     <button class="action clear" rel="#confirm_clear" title="Delete all records from collection">clear</button>
     <button class="action drop" rel="#confirm_drop" title="Drop the entire collection">drop</button>
   </div>
-  <div id="results">
-    <%= partial :'collections/results' %>
-  </div>
+  <fieldset class="sep">
+    <legend> indexes </legend>    
+    <div id="indexes">
+      <%= partial :'collections/indexes' %>
+    </div>
+  </fieldset>
+  <fieldset class="sep">
+    <legend> records </legend>
+    <div id="results">
+      <%= partial :'collections/results' %>
+    </div>
+  </fieldset>
 <div>
   
-<div class="modal" id="confirm_clear">
+<div class="modal" id="confirm_clear" style="font-size:1em">
    <p>Clearing out the whole collection. Are you sure?</p>
    <p style="margin:10px">
      <button class="close yes" id="clear"> Yes </button>
@@ -20,7 +32,7 @@
    </p>     
 </div>
 
-<div class="modal" id="confirm_drop">
+<div class="modal" id="confirm_drop" style="font-size:1em">
    <p>Dropping the whole collection. Are you sure?</p>
    <p style="margin:10px">
      <button class="close yes" id="drop"> Yes </button>

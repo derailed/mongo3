@@ -1,0 +1,3 @@
+<%= erb :'shared/flash.js', :layout => false %>
+
+$('div#indexes').html( "<%=escape_javascript(partial(:'collections/index_rows'))%>" );

@@ -2,14 +2,46 @@ require 'json'
 
 module Collections
   
+# [ ['last_name', -1], ['name', 1] ]  
+  # ---------------------------------------------------------------------------
+  post "/collections/create_index/" do
+    json   = params[:index].gsub( /'/, "\"" )
+    tokens = json.split( "|" )
+    
+    begin
+      raise "You need to enter an index description" if tokens.empty?
+      index       = JSON.parse( tokens.shift )
+      constraints = tokens.empty? ? nil : JSON.parse( tokens.first )
+      
+      options.connection.create_index( session[:path_names], index, constraints )
+      flash_it!( :info, "Index was created successfully!" )
+    rescue => boom
+      flash_it!( :error, boom )
+      return erb(:'shared/flash.js', :layout => false)
+    end
+
+    @indexes = options.connection.indexes_for( session[:path_names] )
+        
+    erb :'collections/update_indexes.js', :layout => false    
+  end
+  
+  # ---------------------------------------------------------------------------  
+  post "/collections/drop_index/" do
+    options.connection.drop_index( session[:path_names], params[:id] )
+    flash_it!( :info, "Index was dropped successfully!" )
+    erb :'shared/flash.js', :layout => false
+  end
+
   # --------------------------------------------------------------------------- 
   # Paginate on a collection
   get "/collections/:page" do    
     @back_url  = "/explore/back"
     @page      = params[:page].to_i || 1
-    @title     = title_for( session[:path_names] )
+
+    @indexes = options.connection.indexes_for( session[:path_names] )
     
-    load_cltn( params[:page].to_i )    
+    load_cltn( params[:page].to_i )
+    
     erb :'collections/list'
   end  
   
@@ -35,14 +67,14 @@ module Collections
       begin
         @query = JSON.parse( tokens.shift )
         @sort  = tokens.empty? ? [] : JSON.parse( tokens.first )
-      rescue => boom        
+        session[:query_params] = [@query, @sort]
+        load_cltn        
+      rescue => boom
         flash_it!( :error, boom )
         return erb(:'shared/flash.js', :layout => false)
       end
     end
-    session[:query_params] = [@query, @sort]
     
-    load_cltn
     erb :'collections/update.js', :layout => false
   end
 
@@ -50,6 +82,9 @@ module Collections
     path_names = session[:path_names]
     options.connection.delete_row( path_names, params[:id] )
     load_cltn
+    
+    flash_it!( :info, "Row was deleted successfully!" )
+    
     erb :'collections/update.js', :layout => false    
   end
 
@@ -70,9 +105,8 @@ module Collections
   # ===========================================================================
   helpers do    
     def load_cltn( page=1 )
-      query_params   = session[:query_params] || [{},[]]
-      
-      if query_params.first.empty? and query_params.last.empty?
+      query_params = session[:query_params] || [{},[]]
+      if ( !query_params.first or query_params.first.empty?) and ( !query_params.last or query_params.last.empty? )
         @query = nil
       else  
         @query = [query_params.first.to_json, query_params.last.to_json].join( " | " )

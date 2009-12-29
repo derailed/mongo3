@@ -8,14 +8,14 @@ module CrumbHelper
       @crumbs = []
       count   = 0
       path_name_tokens.each do |crumb|
-        @crumbs << [crumb, "/explore/center/#{path_id_tokens[count]}"]
+        @crumbs << [crumb, "/explore/center/#{path_name_tokens[0..count].join( "|" )}/#{path_id_tokens[0..count].join( "|") }"]
         count += 1
       end
       session[:crumbs] = @crumbs
     end
     
-    def pop_crumb!( node_id )
-      path  = "/explore/center/#{node_id}"
+    def pop_crumb!( path_ids, path_names )
+      path  = "/explore/center/#{path_ids}/#{path_names}"
       level = 0
       range = nil
       @crumbs.each do |pair|
@@ -30,7 +30,7 @@ module CrumbHelper
     end
   
     def reset_crumbs!
-      @crumbs = [ ["home", '/explore/center/home'] ]
+      @crumbs = [ ["home", '/explore/center/home/home'] ]
       session[:crumbs] = @crumbs
     end
   

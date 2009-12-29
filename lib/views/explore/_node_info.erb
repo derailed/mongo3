@@ -1,0 +1,131 @@
+<style>
+  div.item img {
+    z-index:100;
+    display:none;
+    float:left;
+    margin-right:10px;
+  }
+  
+  div#legend {
+    border-bottom: 1px #434343 solid;
+    font-size:     0.5em;
+    color:         #92b948;
+    overflow:      hidden;
+  }
+  div#legend_link {
+    text-align:  right;
+    width:       30%;
+    float:       right;
+    font-size:   .7em;
+    padding-top: 7px;
+  }
+
+  div.items {
+    margin-top:10px;
+  }
+  
+  div.item {
+    border-top: 1px #bcffca solid;
+    height:     30px;
+    width:      100%;
+    font-size:  .4em;
+    cursor:     pointer;
+    z-index:    1;
+  }
+  div.selected {
+    background-image: url(/images/selected_bg.png);
+    color: #92b948;
+  }
+</style>
+
+<% legend = path_type( session[:path_names] ) %>
+<div id="legend">
+  <div style="width:60%;float:left">
+    @ <%= truncate( legend_title( session[:path_names] ), 30 ) %>
+  </div>
+  <% unless zone_path?( session[:path_names] ) %>
+    <div id="legend_link">
+      <a href="#" onclick="$('img.drop').animate({width:'toggle'});return false;">edit</a>
+    </div>
+  <% end %>
+</div>
+
+<p style="font-size:0.6em;color:#fff"><%=legend_for( session[:path_names], @nodes.size )%></p>
+
+<div id="actions"> 
+  <a class="prevPage">&laquo; back</a> 
+  <a class="nextPage">more &raquo;</a> 
+</div> 
+
+<div class="scrollable vertical">
+  <div class="items">
+    <% count=0;@nodes.sort{|a,b| a.name <=> b.name}.each do |node| %>
+      <div id="<%=count%>" class="item">
+        <% unless zone_path?( session[:path_names] ) %>
+          <img id="<%=count%>" rel="div#confirm_drop" class="drop" href="/explore/database/<%=node.oid%>/<%=node.name%>/drop" title="drop <%=legend%>..." src="/images/delete.png"/>
+        <% end %> 
+        <p rel="div#details" href="/explore/show/<%=node.data[:path_ids]%>/<%=node.data[:path_names]%>" class="info">
+          <%=truncate(node.name, 30)%>
+        </p>
+      </div>
+    <% count+=1; end %>
+  </div>
+</div>
+
+<div class="modal" id="confirm_drop">
+   <p>Dropping <%=legend%>. Are you sure?</p>
+   <p style="margin:10px">
+     <button class="close yes">Yes</button>
+     <button class="close">No</button>
+   </p>
+</div>
+
+<script>
+  $( function() {
+    $("div.scrollable").scrollable({ 
+        vertical:true,  
+        size:    14,
+    }).mousewheel();
+    
+    $("div.item").hover( 
+      function() { $(this).addClass( "selected" ) }, 
+      function() { $(this).removeClass( "selected" ) }
+    );
+        
+    $('img.drop' ).overlay( {
+      expose: {
+         color:     '#212021',
+         loadSpeed: 200,
+         opacity:   0.9 
+      },
+      onBeforeLoad: function() { 
+        $("button.yes").attr( 'href', this.getTrigger().attr('href') );
+        $("button.yes").attr( 'id', this.getTrigger().attr('id') );
+      },
+      closeOnClick: false
+    });
+        
+    $( 'button.yes' ).click( function() {
+      var self = $(this);
+      $.ajax( {
+        dataType: 'script',
+        type:     'get',
+        url:      self.attr('href'),
+        complete: function() {
+          $( 'div#' + self.attr('id') ).fadeOut( 'slow', function() {
+            $( 'span#count').html( $('div.items div.item:visible').length );  
+          });          
+        }
+      }); 
+    });
+    
+    $('div.item p[rel]').overlay( {
+      top:          '15%',
+      expose:       '#1c1c1c',
+      onBeforeLoad: function() {
+        var wrap = this.getContent().find( 'div#wrap' );
+        wrap.load( this.getTrigger().attr( 'href' ) );
+      }
+    });
+  });
+</script>

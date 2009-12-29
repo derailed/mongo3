@@ -101,7 +101,7 @@ describe Mongo3::Connection do
   
   describe "#build_sub_tree" do
     it "should build a adjacencies from db correctly" do
-      adjs = @mongo3.build_sub_tree( 100, "home|test" )
+      adjs = @mongo3.build_sub_tree( 100, "home|test" ).to_adjacencies
       adjs.should_not be_empty
       adjs.size.should > 1
       adjs.first[:name].should == 'test'
@@ -109,7 +109,7 @@ describe Mongo3::Connection do
     end
     
     it "should build a adjacencies from cltn correctly" do
-      adjs = @mongo3.build_sub_tree( 200, "home|test|mongo3_test_db" )
+      adjs = @mongo3.build_sub_tree( 200, "home|test|mongo3_test_db" ).to_adjacencies
       adjs.size.should == 4
       adjs.first[:name].should == 'mongo3_test_db'
       adjs.first[:id].should   == 200
@@ -118,8 +118,7 @@ describe Mongo3::Connection do
     
     it "should build a partial tree correctly" do
       root = @mongo3.build_partial_tree( "home|test|mongo3_test_db" )
-# Mongo3::Node.dump( root )
-      # root.find( "home|test|mongo3_test_db" )
+      root.find( "test_2" ).children.should have(3).items
     end
   end
 
@@ -141,7 +140,7 @@ describe Mongo3::Connection do
     it "should paginate db with q correctly" do
       rows = @mongo3.paginate_cltn( "home|test|mongo3_test_db|test1_cltn", [{:value =>{'$gt' => 5 }}, []] )
       rows.size.should == 4
-      rows.total_entries.should == 10
+      rows.total_entries.should == 4
     end    
   end  
 end

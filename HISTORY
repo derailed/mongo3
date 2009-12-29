@@ -14,3 +14,8 @@
   o Using memcache for session store - will need a local memcache server on default port!
   o Added confirm dialog on clear and drop
   o Bug fixes and some refactor
+  
+0.0.5 - Lots of changes... Yeah!
+  o cleaned up ui
+  o added edit on main context window
+  o added index crud for collection

@@ -1,12 +1,17 @@
 module MainHelper  
  helpers do   
-   
-    def update_paths!( path_ids, path_names )
-puts "UPDAING PATH #{path_ids} -- #{path_names}"      
-      session[:path_ids]   = path_ids
-      session[:path_names] = path_names
+      
+    def zone_locator
+      locator = session[:path_names].split( "|" )[1]
+      "<p class=\"ctx\"><span>zone</span>#{locator}</p>"
     end
-    
+      
+    def truncate(text, length = 30, truncate_string = "...")
+      return "" if text.nil?
+      l = length - truncate_string.size
+      text.size > length ? (text[0...l] + truncate_string).to_s : text
+    end
+      
     def align_for( value )
       return "right" if value.is_a?(Fixnum)
       "left"
@@ -17,30 +22,7 @@ puts "UPDAING PATH #{path_ids} -- #{path_names}"
       return value.to_s.gsub(/(\d)(?=\d{3}+(\.\d*)?$)/, '\1,') if value.instance_of?(Fixnum)
       value
     end
-   
-    def back_paths!      
-      path_ids   = session[:path_ids]
-      new_path_ids = path_ids.split( "|" )
-      new_path_ids.pop
-    
-      path_names = session[:path_names]    
-      new_path_names = path_names.split( "|" )
-      new_path_names.pop
-      
-      update_paths!( new_path_ids.join( "|" ), new_path_names.join( "|" ) )
-    end
-    
-    def title_for( path_names )
-      tokens = path_names.split( "|" )
-      buff = case tokens.length 
-        when 2 : "Environment"
-        when 3 : "Database"
-        else     "Collection"
-      end
-      
-      buff += " <em>#{tokens.last}</em>"
-    end
-    
+           
     def display_info( info )
       return info if info.is_a?( String )
       if info.is_a?( Hash )
