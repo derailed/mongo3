@@ -1,6 +1,30 @@
 module MainHelper  
  helpers do   
       
+    def stylesheets( styles )
+      buff = []
+      styles.each do |style|
+        buff << "<link rel=\"stylesheet\" href=\"#{v_styles( style )}\" type=\"text/css\" media=\"screen\" />"
+      end
+      buff.join( "\n" )
+    end
+    
+    def javascripts( scripts )
+      buff = []
+      scripts.each do |script|
+        buff << "<script src=\"#{v_js( script )}\" type=\"text/javascript\"></script>"
+      end
+      buff.join( "\n" )      
+    end
+          
+    def v_styles(stylesheet)
+      "/stylesheets/#{stylesheet}.css?" + File.mtime(File.join(Sinatra::Application.public, "stylesheets", "#{stylesheet}.css")).to_i.to_s
+    end
+    
+    def v_js(js)
+      "/javascripts/#{js}.js?" + File.mtime(File.join(Sinatra::Application.public, "javascripts", "#{js}.js")).to_i.to_s
+    end
+      
     def zone_locator
       locator = session[:path_names].split( "|" )[1]
       "<p class=\"ctx\"><span>zone</span>#{locator}</p>"

@@ -33,10 +33,10 @@ module Databases
   # ---------------------------------------------------------------------------  
   post "/databases/delete/" do
     path = params[:path]    
+ 
+    options.connection.drop_cltn( session[:path_names] + "|" + path )
     
-    options.connection.drop_cltn( path )
-    
-    flash_it!( :info, "Collection #{path.split('|').last} was dropped successfully!" )        
+    flash_it!( :info, "Collection #{path} was dropped successfully!" )        
     
     @cltns = options.connection.paginate_db( session[:path_names], 1, 10 )    
   

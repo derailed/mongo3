@@ -38,9 +38,10 @@ describe Mongo3::Connection do
   end
   
   it "should delete a row correctly" do
+    before = @cltn1.count
     obj = @cltn1.find_one()
     @mongo3.delete_row( "home|test|mongo3_test_db|test1_cltn", obj['_id'].to_s )
-    @db['test1_cltn'].count.should == 9    
+    @db['test1_cltn'].count.should == before-1    
   end
   
   it "should drop a cltn correctly" do

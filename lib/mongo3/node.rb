@@ -17,6 +17,28 @@ module Mongo3
       Node.new( name, name, :path_ids => name, :path_names => name )
     end
     
+    def mark_slave!
+      data[:slave] = true
+      data['$lineWidth'] = 3
+      data['$color']     = "#434343"
+      data['$dim']       = 15
+    end
+    
+    def mark_master!
+      data[:master]  = true
+      data['$color'] = '#92b948'
+      data['$dim']       = 15
+      data['$lineWidth'] = 3      
+    end
+    
+    def master?
+      data.has_key?( :master )
+    end
+    
+    def slave?
+      data.has_key?( :slave )
+    end
+    
     # Add a child node
     def <<( new_one )
       new_one.parent = self
@@ -38,13 +60,20 @@ module Mongo3
           
     # convert a tree node to a set of adjacencies
     def to_adjacencies
-      root_level = { :id => self.oid, :name => self.name, :data => self.data, :adjacencies => [] } 
-      cltn = [ root_level ]
-      self.children.each do |child|
-        root_level[:adjacencies] << child.oid
-        cltn << { :id => child.oid, :name => child.name, :data => child.data, :adjacencies => [] } 
-      end
+      cltn = []
+      _to_adjacencies( self, cltn )
       cltn
+    end
+    
+    def _to_adjacencies( node, cltn )
+      node_level = { :id => node.oid, :name => node.name, :data => node.data, :adjacencies => [] } 
+      cltn << node_level
+      node.children.each do |child|
+        node_level[:adjacencies] << child.oid
+        _to_adjacencies( child, cltn )
+        # cltn << { :id => child.oid, :name => child.name, :data => child.data, :adjacencies => [] } 
+      end
+      # cltn
     end
     
     # converts to json

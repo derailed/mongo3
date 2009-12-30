@@ -14,10 +14,9 @@
       </thead>
       <tbody>
         <% count = 0; @cltns.each do |cltn| %>
-          <% path = "#{session[:path_names]}|#{cltn[:name]}"%>
           <tr id="<%=count%>" valign="top">
             <td id="<%=count%>">
-              <img class="delete" id="<%=path%>" rel="<%=count%>" src="/images/delete.png" title="drop this collection"/>
+              <img rel="div#confirm_drop" class="drop" id="<%=cltn[:name]%>" rel="<%=count%>" src="/images/delete.png" title="drop this collection"/>
               <img class="wait" id="wait_<%=count%>" src="/images/loading.gif"></img>
             </td>
             <td><a href="/databases/collection/<%=cltn[:name]%>/"><%= cltn[:name] %></a></td>
@@ -34,6 +33,14 @@
   <div class="no_items">Oh snap! No collections found...</span>
 <% end %>
 
+<div class="modal" id="confirm_drop" style="font-size:1em">
+   <p>Dropping collection. Are you sure?</p>
+   <p style="margin:10px">
+     <button class="close yes">Yes</button>
+     <button class="close">No</button>
+   </p>
+</div>
+
 <script>
   $( function() {
     $("table#cltn tr" ).hover( 
@@ -44,17 +51,27 @@
       function() { 
         $(this).removeClass( 'highlight' );      
         $("td#" + $(this).attr('id') + " img.delete" ).hide();
-      });
-    $( "img.delete" ).click( function() {
-      var id = $(this).attr('id');
-      var count = $(this).attr('rel')
+    });
+    
+    $('img.drop' ).overlay( {
+      expose: {
+         color:     '#212021',
+         loadSpeed: 200,
+         opacity:   0.9 
+      },
+      onBeforeLoad: function() {
+        $("button.yes").attr( 'id', this.getTrigger().attr('id') );
+      },
+      closeOnClick: false
+    });
+        
+    $( 'button.yes' ).click( function() {
+      var self = $(this);
       $.ajax({
-        data:     {path: id},
+        data:     {path:self.attr('id')},
         dataType: 'script',
         type:     'post',
-        url:      '/databases/delete/',
-        beforeSend: function() { $('img#_wait_' + count ).show(); },
-        complete:   function() { $('img#_wait_' + count ).hide(); }
+        url:      '/databases/delete/'
       }); 
     });    
   });

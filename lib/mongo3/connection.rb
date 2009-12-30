@@ -8,16 +8,16 @@ module Mongo3
     # drop a database using context and db name
     def drop_database( path_names, db_name )
       path_name_tokens = path_names.split( "|" )
-      env              = path_name_tokens[1]      
-      connect_for( env ) do |con|
+      zone              = path_name_tokens[1]      
+      connect_for( zone ) do |con|
         con.drop_database( db_name )
       end      
     end
     
     def drop_db( path_names )
       path_name_tokens = path_names.split( "|" )
-      env              = path_name_tokens[1]
-      connect_for( env ) do |con|
+      zone              = path_name_tokens[1]
+      connect_for( zone ) do |con|
         db_name   = path_name_tokens.pop
         con.drop_database( db_name )
       end
@@ -25,9 +25,9 @@ module Mongo3
 
     def indexes_for( path_names )
       path_name_tokens = path_names.split( "|" )
-      env              = path_name_tokens[1]
+      zone              = path_name_tokens[1]
       indexes          = {}
-      connect_for( env ) do |con|
+      connect_for( zone ) do |con|
         cltn_name = path_name_tokens.pop
         db_name   = path_name_tokens.pop
         db        = con.db( db_name )
@@ -39,8 +39,8 @@ module Mongo3
 
     def drop_index( path_names, index )
       path_name_tokens = path_names.split( "|" )
-      env              = path_name_tokens[1]      
-      connect_for( env ) do |con|
+      zone              = path_name_tokens[1]      
+      connect_for( zone ) do |con|
         cltn_name = path_name_tokens.pop
         db_name   = path_name_tokens.pop
         db        = con.db( db_name )
@@ -51,8 +51,8 @@ module Mongo3
     
     def create_index( path_names, index, constraints )
       path_name_tokens = path_names.split( "|" )
-      env              = path_name_tokens[1]      
-      connect_for( env ) do |con|
+      zone              = path_name_tokens[1]      
+      connect_for( zone ) do |con|
         cltn_name = path_name_tokens.pop
         db_name   = path_name_tokens.pop
         db        = con.db( db_name )
@@ -63,8 +63,8 @@ module Mongo3
 
     def drop_cltn( path_names )
       path_name_tokens = path_names.split( "|" )
-      env              = path_name_tokens[1]      
-      connect_for( env ) do |con|
+      zone              = path_name_tokens[1]      
+      connect_for( zone ) do |con|
         cltn_name = path_name_tokens.pop
         db_name   = path_name_tokens.pop
         db        = con.db( db_name )
@@ -75,8 +75,8 @@ module Mongo3
 
     def clear_cltn( path_names )
       path_name_tokens = path_names.split( "|" )
-      env              = path_name_tokens[1]      
-      connect_for( env ) do |con|
+      zone              = path_name_tokens[1]      
+      connect_for( zone ) do |con|
         cltn_name = path_name_tokens.pop
         db_name   = path_name_tokens.pop
         db        = con.db( db_name )
@@ -87,8 +87,8 @@ module Mongo3
            
     def delete_row( path_names, id )
       path_name_tokens = path_names.split( "|" )
-      env              = path_name_tokens[1]      
-      connect_for( env ) do |con|
+      zone              = path_name_tokens[1]      
+      connect_for( zone ) do |con|
         cltn_name = path_name_tokens.pop
         db_name   = path_name_tokens.pop
         db        = con.db( db_name )
@@ -100,12 +100,12 @@ module Mongo3
     def show( path_names )
       path_name_tokens = path_names.split( "|" )
       info             = OrderedHash.new
-      env              = path_name_tokens[1]
+      zone              = path_name_tokens[1]
       
       info[:title] = path_name_tokens.last
       if path_name_tokens.size == 2
-        connect_for( env ) do |con|
-          info[:name]        = env
+        connect_for( zone ) do |con|
+          info[:name]        = zone
           info[:host]        = con.host
           info[:port]        = con.port
           info[:databases]   = OrderedHash.new
@@ -116,7 +116,7 @@ module Mongo3
       elsif path_name_tokens.size == 3
         db_name = path_name_tokens.pop
         info[:links] = OrderedHash.new
-        connect_for( env ) do |con|          
+        connect_for( zone ) do |con|          
           db = con.db( db_name )
           info[:links][:manage] = "/databases/1"
           # info[:links][:drop]   = "/databases/drop/"
@@ -130,7 +130,7 @@ module Mongo3
         info[:links] = OrderedHash.new        
         cltn_name = path_name_tokens.pop
         db_name   = path_name_tokens.pop
-        connect_for( env ) do |con|
+        connect_for( zone ) do |con|
           db      = con.db( db_name )
           cltn    = db[cltn_name]
           indexes = db.index_information( cltn_name )
@@ -146,9 +146,9 @@ module Mongo3
 
     def paginate_db( path_names, page=1, per_page=10 )
       path_name_tokens = path_names.split( "|" )
-      env              = path_name_tokens[1]
+      zone              = path_name_tokens[1]
       list             = nil
-      connect_for( env ) do |con|
+      connect_for( zone ) do |con|
         db_name = path_name_tokens.pop
         db      = con.db( db_name )
         cltn    = collection_names(db).sort
@@ -172,9 +172,9 @@ module Mongo3
         
     def paginate_cltn( path_names, query_params=[{},[]], page=1, per_page=10 )
       path_name_tokens = path_names.split( "|" )
-      env              = path_name_tokens[1]
+      zone              = path_name_tokens[1]
       list             = nil
-      connect_for( env ) do |con|
+      connect_for( zone ) do |con|
         cltn_name = path_name_tokens.pop
         db_name   = path_name_tokens.pop
         db        = con.db( db_name )
@@ -194,48 +194,85 @@ module Mongo3
       list
     end
             
-    # Fetch the environment landscape from the config file
+    # Fetch the cluster landscape from the config file
     def landscape
       config
     end
 
-    # Build environment tree
+    # Build zone tree
     def build_tree
       root = Node.make_node( "home" )
       
-      # iterate thru envs
-      id = 1
-      config.each_pair do |env, info|
-        node = Node.new( env, env, :dyna => true )
+      # iterate thru zones
+      adjacencies = {}
+      config.each_pair do |zone, info|
+        node = Node.new( zone, zone, :dyna => true )
         root << node
-        id += 1
+        adjs = adjacencies[zone]
+        if adjs
+          node.mark_master!
+          adjs.each { |n| node << n }
+        end
+        masters = slave?( zone )
+        next if masters.empty?
+
+        node.mark_slave!     
+        masters.each do |master|
+          host, port = master.split( ":" )
+          master_zone = zone_for( host, port )
+          next unless master_zone
+          master_node = root.find( "home|#{master_zone}")
+          if master_node
+            master_node.mark_master!
+            master_node << node
+          else
+            adjacencies[master_zone] = [] unless adjacencies[master_zone]
+            adjacencies[master_zone] << node
+          end
+        end
       end
       root
     end
-
-    # Build environment tree
+    
+    def slave?( zone )
+      masters = []
+      connect_for( zone ) do |con|
+        local = con.db( "local", :strict => true )
+        return masters unless local
+        begin
+          sources = local['sources']
+          srcs    = sources.find( {}, :fields => [:host] )
+          srcs.each{ |src| masters << src['host'] }          
+        rescue => boom
+          ;
+        end
+      end
+      masters
+    end
+    
+    # Build zone tree
     def build_partial_tree( path_names )
       path_name_tokens = path_names.split( "|" )      
-      bm_env           = path_name_tokens[1]
+      bm_zone           = path_name_tokens[1]
       bm_cltn          = path_name_tokens.pop if path_name_tokens.size == 4
       bm_db            = path_name_tokens.pop if path_name_tokens.size == 3
       
       root = Node.make_node( "home" )
       
-      # iterate thru envs
-      config.each_pair do |env, info|
-        node = Node.new( env, env, :dyna => true )
+      # iterate thru zones
+      config.each_pair do |zone, info|
+        node = Node.new( zone, zone, :dyna => true )
         root << node
         
-        next unless node.name == bm_env
+        next unless node.name == bm_zone
 
-        connect_for( env ) do |con|      
+        connect_for( zone ) do |con|      
           count = 0
           data  = { :dyna => true }
           database_names( con ).each do |db_name|
             db      = con.db( db_name, :strict => true )
             cltns   = collection_names( db )  
-            db_node = Node.new( "#{env}_#{count}", "#{db_name}(#{cltns.size})", data.clone )
+            db_node = Node.new( "#{zone}_#{count}", "#{db_name}(#{cltns.size})", data.clone )
             node << db_node
             count += 1
             if bm_db and db_node.name =~ /^#{bm_db}/
@@ -257,24 +294,24 @@ module Mongo3
     # Build an appropriate subtree based on requested item
     def build_sub_tree( parent_id, path_names )
       path_name_tokens = path_names.split( "|" )
-      env              = path_name_tokens[1]      
+      zone              = path_name_tokens[1]      
             
       if db_request?( path_name_tokens )        
-        sub_tree = build_db_tree( parent_id, env )
+        sub_tree = build_db_tree( parent_id, zone )
       else
         db_name  = path_name_tokens.last        
-        sub_tree = build_cltn_tree( parent_id, env, db_name )
+        sub_tree = build_cltn_tree( parent_id, zone, db_name )
       end
       sub_tree
     end
         
     # Connects to host and spews out all available dbs
     # BOZO !! Need to deal with Auth?
-    def build_db_tree( parent_id, env )    
+    def build_db_tree( parent_id, zone )    
       sub_root = nil
-      connect_for( env ) do |con|      
-        root = Node.make_node( "home" )
-        sub_root = Node.new( parent_id, env )
+      connect_for( zone ) do |con|
+        root     = Node.make_node( "home" )
+        sub_root = Node.new( parent_id, zone )
       
         root << sub_root
       
@@ -283,7 +320,7 @@ module Mongo3
         database_names( con ).each do |db_name|
           db    = con.db( db_name, :strict => true )
           cltns = collection_names( db ).size  
-          node  = Node.new( "#{env}_#{count}", "#{db_name}(#{cltns})", data.clone )
+          node  = Node.new( "#{zone}_#{count}", "#{db_name}(#{cltns})", data.clone )
           sub_root << node
           count += 1
         end
@@ -292,15 +329,15 @@ module Mongo3
     end
     
     # Show collections
-    def build_cltn_tree( parent_id, env, db_name ) 
+    def build_cltn_tree( parent_id, zone, db_name ) 
       sub_root = nil
-      connect_for( env ) do |con|
+      connect_for( zone ) do |con|
         db        = con.db( db_name )      
         root      = Node.make_node( "home" )
-        env_node  = Node.make_node( env )
+        zone_node  = Node.make_node( zone )
         sub_root  = Node.new( parent_id, db_name )
-        root     << env_node
-        env_node << sub_root
+        root     << zone_node
+        zone_node << sub_root
       
         count = 0
         data = { :dyna => false }
@@ -328,17 +365,17 @@ module Mongo3
         con.database_names - excludes
       end
       
-      # Connects to mongo given an environment
+      # Connects to mongo given an zone
       # BOZO !! Auth... 
-      def connect_for( env, &block )
-        info = landscape[env]
-        # puts ">>> Connecting for #{env} -- #{info['host']}-#{info['port']}"
+      def connect_for( zone, &block )
+        info = landscape[zone]
+        # puts ">>> Connecting for #{zone} -- #{info['host']}-#{info['port']}"
         con = Mongo::Connection.new( info['host'], info['port'], { :slave_ok => true } )
         
         if info['user'] and info['password']
           con.db( 'admin' ).authenticate( info['user'], info['password'] )
         end
-        yield con
+        yield con        
         con.close()
       end
 
@@ -376,9 +413,18 @@ module Mongo3
         numb.to_s.gsub(/(\d)(?=\d{3}+(\.\d*)?$)/, '\1,')
       end
         
+      # find zone matching the host and port combination
+      def zone_for( host, port )
+        config.each_pair do |zone, info|
+          return zone if info['host'] == host and info['port'] == port.to_i
+        end
+        nil
+      end
+      
       # Initialize the mongo installation landscape
       def config
         unless @config
+puts ">>>> Loading config from file"          
           @config = YAML.load_file( @config_file )
         end
         @config

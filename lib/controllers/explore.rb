@@ -16,12 +16,14 @@ module Explore
 
   # -----------------------------------------------------------------------------
   get '/explore' do
-    @root  = options.connection.build_tree
-    @nodes = @root.children
+    root   = options.connection.build_tree
+    @root  = root.to_adjacencies
+    @nodes = root.children
     
     reset_crumbs!
     reset_paths!
-    
+
+Mongo3::Node.dump_adj( @root )    
     erb :'explore/explore'
   end
 
@@ -66,11 +68,11 @@ module Explore
     
     crumbs_from_path( path_ids, path_names )    
     
-    root = options.connection.build_sub_tree( parent_id, path_names )
+    root = options.connection.build_sub_tree( parent_id, path_names )    
     @sub_tree = root.to_adjacencies
     @node_id  = @sub_tree.first[:id]
     @nodes    = root.children
-    
+Mongo3::Node.dump_adj( @sub_tree )    
     erb :'explore/more_data_js', :layout => false
   end
 

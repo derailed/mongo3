@@ -91,41 +91,59 @@
         domElement.innerHTML = truncate( unescape(node.name), 15 );
         
         addEvent(domElement, 'click', function () {
-        var children_count = 0;
-        for( var i in node.adjacencies )
-           children_count += 1;
+          var children_count = 0;
+          for( var i in node.adjacencies )
+             children_count += 1;
 
-        if ( node.data && children_count == 1 && node.data.dyna )
-        {
-          Log.write( "fetching new data..." );
-          var url = "/explore/more_data/";
-          url     += node.data.path_ids + "/" + node.data.path_names + "/";
-          $.ajax( {
-            dataType: 'script',
-            type:     'GET',
-            url:      url
-          });
-        }
-        else
-        {
-           if( node.data.path_ids.split( '|' ).length < 4 ) {
-             Log.write( "centering..." );               
-             ht.onClick( node.id, {
-               Move:      { enable: true, offsetX: 30, offsetY: 5 },
-               onComplete: function() { 
-                 $.ajax( {
-                    dataType: 'script', 
-                    type:     'GET', 
-                    url:      "/explore/update_crumb/" + node.data.path_ids + "/" + node.data.path_names });
-                } });
-            }
-            else {
-              Log.write( "no more data" );
-            }
-         }
+          // Bail if slave node 
+          if ( node.data && node.data.slave )
+          {
+            Log.write( "Slave node detected. No action" );
+            return;
+          }
+            
+          if ( node.data && node.data.dyna && (children_count == 1 || node.data.master)  )
+          {
+            Log.write( "fetching new data..." );
+            var url = "/explore/more_data/";
+            url     += node.data.path_ids + "/" + node.data.path_names + "/";
+            $.ajax( {
+              dataType: 'script',
+              type:     'GET',
+              url:      url,
+              success:  function() { node.data.dyna = false; }
+            });
+          }
+          else
+          {
+             if( node.data.path_ids.split( '|' ).length < 4 ) {
+               Log.write( "centering..." );               
+               ht.onClick( node.id, {
+                 Move:      { enable: true, offsetX: 30, offsetY: 5 },
+                 onComplete: function() { 
+                   $.ajax( {
+                      dataType: 'script', 
+                      type:     'GET', 
+                      url:      "/explore/update_crumb/" + node.data.path_ids + "/" + node.data.path_names });
+                  } });
+              }
+              else {
+                Log.write( "no more data" );
+              }
+           }
       });
     },
               
+    onBeforePlotLine: function(adj) {
+      var nodeTo   = adj.nodeTo;
+      var nodeFrom = adj.nodeFrom;
+      if( nodeFrom.data.slave && nodeTo.data.master )
+      {
+        adj.data.$lineWidth = 3;
+        adj.data.$color     = "#f00";
+      }
+    },
+    
     onPlaceLabel: function(domElement, node){
       var item = $(domElement);
 
@@ -145,6 +163,9 @@
     onBeforePlotNode: function( node ) {
       level = node.data.path_ids.split("|").length;
   
+      if( node.data.slave || node.data.master )
+        return;
+      
       if( level == 1 ) 
       {        
         node.data.$dim   = 10;
