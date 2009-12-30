@@ -16,7 +16,7 @@
         <% count = 0; @cltns.each do |cltn| %>
           <tr id="<%=count%>" valign="top">
             <td id="<%=count%>">
-              <img rel="div#confirm_drop" class="drop" id="<%=cltn[:name]%>" rel="<%=count%>" src="/images/delete.png" title="drop this collection"/>
+              <img rel="div#confirm_drop" class="drop" id="<%=cltn[:name]%>" rel="<%=count%>" src="/images/delete.png" title="drop this collection" style="display:none"/>
               <img class="wait" id="wait_<%=count%>" src="/images/loading.gif"></img>
             </td>
             <td><a href="/databases/collection/<%=cltn[:name]%>/"><%= cltn[:name] %></a></td>
@@ -46,11 +46,11 @@
     $("table#cltn tr" ).hover( 
       function() { 
         $(this).addClass( 'highlight' );
-        $("td#" + $(this).attr('id') + " img.delete" ).show();
+        $("td#" + $(this).attr('id') + " img.drop" ).show();
       }, 
       function() { 
         $(this).removeClass( 'highlight' );      
-        $("td#" + $(this).attr('id') + " img.delete" ).hide();
+        $("td#" + $(this).attr('id') + " img.drop" ).hide();
     });
     
     $('img.drop' ).overlay( {

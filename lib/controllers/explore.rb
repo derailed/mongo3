@@ -23,7 +23,7 @@ module Explore
     reset_crumbs!
     reset_paths!
 
-Mongo3::Node.dump_adj( @root )    
+# Mongo3::Node.dump_adj( @root )    
     erb :'explore/explore'
   end
 
@@ -72,7 +72,7 @@ Mongo3::Node.dump_adj( @root )
     @sub_tree = root.to_adjacencies
     @node_id  = @sub_tree.first[:id]
     @nodes    = root.children
-Mongo3::Node.dump_adj( @sub_tree )    
+# Mongo3::Node.dump_adj( @sub_tree )    
     erb :'explore/more_data_js', :layout => false
   end
 
