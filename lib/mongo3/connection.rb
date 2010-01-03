@@ -113,6 +113,7 @@ module Mongo3
           info[:links][:users]  = "/users/1" unless slave
           info[:name]           = zone
           info[:host]           = con.host
+          info[:users]          = con.db('admin')[Mongo::DB::SYSTEM_USER_COLLECTION].count rescue 0
           info[:port]           = con.port
           info[:databases]      = OrderedHash.new
           con.database_info.sort { |a,b| b[1] <=> a[1] }.each { |e| info[:databases][e[0]] = to_mb( e[1] ) }
