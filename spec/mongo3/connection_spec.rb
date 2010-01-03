@@ -80,7 +80,7 @@ describe Mongo3::Connection do
   describe "#show" do
     it "should pull env info correctly" do
       info = @mongo3.show( "home|test" )
-      info.size.should             == 6
+      info.size.should             == 8
       info[:title].should          == "test"
       info[:databases].size.should > 1
     end
