@@ -1,47 +1,7 @@
-<style>
-  div.item img {
-    z-index:100;
-    display:none;
-    float:left;
-    margin-right:10px;
-  }
-  
-  div#legend {
-    border-bottom: 1px #434343 solid;
-    font-size:     0.5em;
-    color:         #92b948;
-    overflow:      hidden;
-  }
-  div#legend_link {
-    text-align:  right;
-    width:       30%;
-    float:       right;
-    font-size:   .7em;
-    padding-top: 7px;
-  }
-
-  div.items {
-    margin-top:10px;
-  }
-  
-  div.item {
-    border-top: 1px #bcffca solid;
-    height:     30px;
-    width:      100%;
-    font-size:  .4em;
-    cursor:     pointer;
-    z-index:    1;
-  }
-  div.selected {
-    background-image: url(/images/selected_bg.png);
-    color: #92b948;
-  }
-</style>
-
 <% legend = path_type( session[:path_names] ) %>
 <div id="legend">
-  <div style="width:60%;float:left">
-    @ <%= truncate( legend_title( session[:path_names] ), 30 ) %>
+  <div style="width:85%;float:left">
+    @ <%= truncate( legend_title( session[:path_names] ), 20 ) %>
   </div>
   <% unless zone_path?( session[:path_names] ) %>
     <div id="legend_link">
@@ -59,7 +19,8 @@
 
 <div class="scrollable vertical">
   <div class="items">
-    <% count=0;@nodes.sort{|a,b| a.name <=> b.name}.each do |node| %>
+    <% count=0;@nodes.sort{|a,b| a.name <=> b.name}.each do |node| %>      
+      <% next if node.data[:slave] and !zone_path?( session[:path_names] ) %> 
       <div id="<%=count%>" class="item">
         <% unless zone_path?( session[:path_names] ) %>
           <img id="<%=count%>" rel="div#confirm_drop" class="drop" href="/explore/database/<%=node.oid%>/<%=node.name%>/drop" title="drop <%=legend%>..." src="/images/delete.png"/>
@@ -84,7 +45,7 @@
   $( function() {
     $("div.scrollable").scrollable({ 
         vertical:true,  
-        size:    14,
+        size:    13,
     }).mousewheel();
     
     $("div.item").hover( 

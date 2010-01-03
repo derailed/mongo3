@@ -1,0 +1,41 @@
+<script src="/javascripts/jquery.example.js" type="text/javascript"></script>
+    
+<form id="add_user" onsubmit="add_user();return false;" action="/users/add/" method="post" style="text-align:center">
+  <fieldset>
+    <input id="user" type="text" name="user" class="user field_border" value=""/>
+    <input id="passwd" type="password" name="passwd" class="user field_border" value=""/>
+    <button type="submit" id="submit_button" class="button user" style="height:30px;font-size:1em">create</button>
+    <img id="add_load" src="/images/loading.gif" style="width:25px;height:25px;vertical-align:sub;display:none"></img>
+  </fieldset>  
+</form>
+
+<script>
+ $( function() {
+   clear_fields( $('form#add_user') );
+   $('input.user').hover( 
+     function() { $(this).css( "border-color", "#92b948") }, 
+     function() { $(this).css( "border-color", "#434343") })
+ });
+
+ function clear_fields( form )
+ {
+   form.find( ".no_input" ).val( '' );
+   $('input#user').example("user name", { className: 'no_input' } );
+   $('input#passwd').example("secret", { className: 'no_input' } );      
+ }
+ 
+ function add_user()
+ {
+   $.ajax({
+     data:       $.param( $("form#add_user").serializeArray() ),
+     dataType:   'script',
+     type:       'post',
+     url:        '/users/add/',
+     beforeSend: function() { $('img#add_load').show(); },
+     complete:   function() { 
+       clear_fields( $(this) );       
+       $('img#add_load').hide(); 
+     }     
+   }); 
+ }
+</script>

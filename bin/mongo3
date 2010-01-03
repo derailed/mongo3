@@ -1,29 +1,76 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-require 'sinatra'
-require File.expand_path( File.join(File.dirname(__FILE__), %w[.. lib mongo3]))
-require File.join(File.dirname(__FILE__), %w[.. lib main.rb])
+require 'main'
 
-def open(path)
-  case RUBY_PLATFORM
-    when /darwin/
-      system 'open', path
-    when /mswin(?!ce)|mingw|cygwin|bccwin/
-      system 'start', path
-    else
-      system 'firefox', path
+URI_MATCH = /(mongo|memcache):\/\/(.+?)\:(\d+)\/(\w+)\/{0,1}(\w*)/
+
+Main {  
+  option( 'pool=[pool]', 'p' ) {
+    validate    { |pool| pool =~ URI_MATCH }
+    description "specify server uri. Must be of the form {[mongo|memcache]}://{host}:{port}/{[database_name|namespace]}[/{collection_name}]"
+  }
+  environment( 'RACK_ENV' ) {
+    default 'production'
+  }
+  
+  @@options = {}
+  
+  # Enter main loop  
+  def run
+    require File.expand_path( File.join(File.dirname(__FILE__), %w[.. lib mongo3]))    
+    
+    @@options = parse_args( params[:pool].value )
+    ENV['RACK_ENV'] = params['RACK_ENV'].value
+    
+    Thread.new do 
+      puts "-"*100
+      puts "Initializing mongo3 -- Version #{Mongo3::VERSION}"
+      puts "-"*100      
+      puts "\n"*2
+      puts ">>> Waiting for Franky to warm up..."
+      puts "\n"*2  
+      sleep( sleep_time )
+      puts "\n"*2  
+      puts ">>> Opening console..."
+      puts "\n"*2
+      open( "http://localhost:6666/explore" )
+    end
+    
+    # Clearing args for franky!
+    ARGV.clear
+    require 'sinatra'    
+    require File.join(File.dirname(__FILE__), %w[.. lib app.rb])
+    Sinatra::Application.run! :port => 6666, :environment => 'production'
   end
-end
-
-Thread.new do 
-  puts "\n"*2
-  puts ">>> Waiting for Franky to warm up..."
-  puts "\n"*2  
-  sleep( 3 )
-  puts "\n"*2  
-  puts "\n\n >>> Opening console..."
-  puts "\n"*2
-  open( "http://localhost:6666/explore" )
-end
-
-Sinatra::Application.run! :port => 6666, :environment => 'production'
+  
+  # sleepy time...
+  def sleep_time
+    3
+  end
+  
+  # open console...
+  def open(path)
+    case RUBY_PLATFORM
+      when /darwin/
+        system 'open', path
+      when /mswin(?!ce)|mingw|cygwin|bccwin/
+        system 'start', path
+      else
+        system 'firefox', path
+    end
+  end
+  
+  # parse uri into sub components
+  def parse_args( server_uri )
+    return unless server_uri
+    tokens = server_uri.match( URI_MATCH ).captures
+    opts = { :protocol => tokens.first, :host => tokens[1], :port => tokens[2] }
+    if opts[:protocol] == "mongo"
+      opts[:db_name]   = tokens[3]
+      opts[:cltn_name] = tokens[4]
+    else
+      opts[:namespace] = tokens[3]
+    end
+    opts
+  end  
+}

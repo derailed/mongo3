@@ -1,0 +1,78 @@
+<%= partial :'users/new'%>
+
+<div id="summary">
+  <%= page_entries_info @users, :entry_name => 'user' %>
+</div>
+
+<% unless @users.empty? %>
+  <div class="borders" style="padding:10px">
+    <table id="cltn" class="cltn" border="0" cellpadding="10" cellspacing="20">
+      <thead>
+        <th width="2%">&nbsp;</th>
+        <th>Id</th>
+        <th>Name</th>
+      </thead>
+      <tbody>
+        <% count = 0; @users.each do |user| %>
+          <tr id="<%=count%>" valign="top">
+            <td id="<%=count%>">
+              <img rel="div#confirm_drop" class="drop" id="<%=user['_id']%>" rel="<%=count%>" src="/images/delete.png" title="drop this user" style="display:none"/>
+              <img class="wait" id="wait_<%=count%>" src="/images/loading.gif"></img>
+            </td>
+            <td><%= user['_id'] %></td>
+            <td><%= user['user'] %></td>
+          </tr>
+        <% count+=1;end %>
+      </tbody>
+    </table>
+  </div>
+  <div id="links">
+    <%= will_paginate @users, :params => { :url => "/users" } %>
+  </div>
+<% else %>
+  <div class="no_items">Oh snap! No users found...</span>
+<% end %>
+
+<div class="modal" id="confirm_drop" style="font-size:1em">
+   <p>Dropping user. Are you sure?</p>
+   <p style="margin:10px">
+     <button class="close yes">Yes</button>
+     <button class="close">No</button>
+   </p>
+</div>
+
+<script>
+  $( function() {
+    $("table#cltn tr" ).hover( 
+      function() { 
+        $(this).addClass( 'highlight' );
+        $("td#" + $(this).attr('id') + " img.drop" ).show();
+      }, 
+      function() { 
+        $(this).removeClass( 'highlight' );      
+        $("td#" + $(this).attr('id') + " img.drop" ).hide();
+    });
+    
+    $('img.drop' ).overlay( {
+      expose: {
+         color:     '#212021',
+         loadSpeed: 200,
+         opacity:   0.9 
+      },
+      onBeforeLoad: function() {
+        $("button.yes").attr( 'id', this.getTrigger().attr('id') );
+      },
+      closeOnClick: false
+    });
+        
+    $( 'button.yes' ).click( function() {
+      var self = $(this);
+      $.ajax({
+        data:     {id:self.attr('id')},
+        dataType: 'script',
+        type:     'post',
+        url:      '/users/delete/'
+      }); 
+    });    
+  });
+</script>

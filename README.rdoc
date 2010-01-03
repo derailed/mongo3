@@ -32,7 +32,7 @@
 * Provide support for db authentication [done]
 * Ability to drilldown in collections and query for content [done]
 * CRUD on dbs, collections, indexes [done]
-* Administer users
+* Administer users [done]
 * Collection rename
 * Manage logs
 * Support for shards and replication
@@ -45,6 +45,8 @@
 * agnostic-will_paginate
 * memcache-client
 * sinatra
+* mongo_rack
+* main
 
 == INSTALL:
   
@@ -73,9 +75,25 @@
 === Launch It!
 
     Launch it. Fires up sinatra and opens up the console
-    NOTE: Assumes memcache server is running on local host with default port!
+    NOTE!!: The gem now leverages mongo_rack ( a mongoDB based session store ).
+    By default, this assumes a mongoDB instance is running on localhost and on default port!
     
     > mongo3
+    
+    Alternatively you can use a different mongo instance to store mongo3 session information
+    or use memcache by specifying the --pool options as follows:
+    
+    To use the mongo session store on localhost at port 27030 with db name 'mongo3' and collection named 'sessions' 
+    
+    > mongo3 --pool "mongo://localhost:27030/mongo3/sessions" 
+    
+    To use memcache session store on localhost at port 11233 with namespace 'mongo3'
+    
+    > mongo3 --pool "memcache://localhost:11233/mongo3"
+    
+    The pool options assumes the following format:
+    
+    --pool {mongo|memcache}://{host}:{port}/{db_name|namespace}/{cltn_name}
   
 == LICENSE:
 

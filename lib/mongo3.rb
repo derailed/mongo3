@@ -1,10 +1,9 @@
-
 module Mongo3
-
+  
   # :stopdoc:
-  VERSION = '0.0.6'
-  LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR
-  PATH = ::File.dirname(LIBPATH) + ::File::SEPARATOR
+  VERSION = '0.0.7' unless defined? Mongo3::VERSION
+  LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR unless defined? Mongo3::LIBPATH
+  PATH = ::File.dirname(LIBPATH) + ::File::SEPARATOR unless defined? Mongo3::LIBPATH
   # :startdoc:
 
   # Returns the version string for the library.

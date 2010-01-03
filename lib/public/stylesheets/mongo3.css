@@ -1,3 +1,4 @@
+/* BOZO !! Refact! */
 * {
   outline-color: invert;
   outline-style: none;
@@ -17,6 +18,13 @@ body {
 	font-variant:     normal;
 	font-weight:      normal;
   margin:           0;
+}
+
+span#version {
+  color:          #4d7bff;
+  font-size:      .4em;
+  vertical-align: bottom;
+  margin:         88px 0px 0px -57px;
 }
 
 img {
@@ -73,7 +81,7 @@ ul {
 
 a {
   text-decoration: none;
-  color:           #434343;
+  color:           #c1c1c1;
 }
 a:hover {
   color: #92b948;
@@ -333,7 +341,8 @@ table.cltn tr {
   color: #fff;
 }
 table.cltn tr.highlight {
-  color: #92b948;
+  color:  #92b948;
+  cursor: pointer;
 }
 
 div.cltn div#summary {
@@ -473,4 +482,66 @@ span#log {
 
 div#info {
   min-height: 520px;
+}
+
+/* Node information */
+div.item img {
+  z-index:      100;
+  display:      none;
+  float:        left;
+  margin-right: 10px;
+}
+
+div#legend {
+  border-bottom: 1px #434343 solid;
+  font-size:     0.5em;
+  color:         #92b948;
+  overflow:      hidden;
+}
+div#legend_link {
+  text-align:  right;
+  width:       15%;
+  float:       right;
+  font-size:   .7em;
+  padding-top: 7px;
+}
+
+div.items {
+  margin-top:10px;
+}
+
+div.item {
+  border-top: 1px #bcffca solid;
+  height:     30px;
+  width:      100%;
+  font-size:  .4em;
+  cursor:     pointer;
+  z-index:    1;
+}
+div.selected {
+  background-image: url(/images/selected_bg.png);
+  color: #92b948;
+}
+
+/* Users */
+input.field_border {
+  -moz-border-radius-bottomleft:  0px;
+  -moz-border-radius-bottomright: 10px;
+  -moz-border-radius-topleft:     10px;
+  -moz-border-radius-topright:    0px;  
+}
+
+input.user {
+  background:                     transparent;  
+  width:                          200px;
+  border:                         2px #434343 solid;
+  height:                         25px;
+  font-size:                      1.2em;
+  color:                          #92b948;
+  padding:                        5px 0px 0px 5px;
+  margin:                         5px 5px;
+}
+
+button.user:hover {
+  background-color: #ad1ecb;
 }

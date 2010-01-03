@@ -2,7 +2,6 @@ require 'json'
 
 module Collections
   
-# [ ['last_name', -1], ['name', 1] ]  
   # ---------------------------------------------------------------------------
   post "/collections/create_index/" do
     json   = params[:index].gsub( /'/, "\"" )
@@ -56,7 +55,6 @@ module Collections
   end
   
   # ---------------------------------------------------------------------------
-  # BOZO !! Validation....
   post "/collections/search/" do
     json = params[:search].gsub( /'/, "\"" )
     if json.empty?
@@ -78,6 +76,7 @@ module Collections
     erb :'collections/update.js', :layout => false
   end
 
+  # ---------------------------------------------------------------------------
   post '/collections/delete/' do
     path_names = session[:path_names]
     options.connection.delete_row( path_names, params[:id] )
@@ -88,6 +87,7 @@ module Collections
     erb :'collections/update.js', :layout => false    
   end
 
+  # ---------------------------------------------------------------------------
   get '/collections/clear/' do
     path_names = session[:path_names]
     options.connection.clear_cltn( path_names )    
@@ -95,6 +95,7 @@ module Collections
     erb :'collections/all_done.js', :layout => false    
   end
 
+  # ---------------------------------------------------------------------------
   get '/collections/drop/' do
     path_names = session[:path_names]
     options.connection.drop_cltn( path_names )    
@@ -104,7 +105,7 @@ module Collections
   
   # ===========================================================================
   helpers do    
-    def load_cltn( page=1 )
+    def load_cltn( page=1 )    
       query_params = session[:query_params] || [{},[]]
       if ( !query_params.first or query_params.first.empty?) and ( !query_params.last or query_params.last.empty? )
         @query = nil

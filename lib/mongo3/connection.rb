@@ -1,3 +1,4 @@
+# BOZO !! Time to refact no?
 module Mongo3
   class Connection
     
@@ -96,38 +97,40 @@ module Mongo3
         cltn.remove( {:_id => Mongo::ObjectID.from_string(id) } )
       end
     end
-     
+         
     def show( path_names )
       path_name_tokens = path_names.split( "|" )
       info             = OrderedHash.new
-      zone              = path_name_tokens[1]
-      
+      zone             = path_name_tokens[1]
+
+      info[:links] = OrderedHash.new      
       info[:title] = path_name_tokens.last
-      if path_name_tokens.size == 2
+            
+      # If detect slave only show reg info
+      slave = slave_zone?( path_name_tokens )
+      if path_name_tokens.size == 2 or slave
         connect_for( zone ) do |con|
-          info[:name]        = zone
-          info[:host]        = con.host
-          info[:port]        = con.port
-          info[:databases]   = OrderedHash.new
+          info[:links][:users]  = "/users/1" unless slave
+          info[:name]           = zone
+          info[:host]           = con.host
+          info[:port]           = con.port
+          info[:databases]      = OrderedHash.new
           con.database_info.sort { |a,b| b[1] <=> a[1] }.each { |e| info[:databases][e[0]] = to_mb( e[1] ) }
-          info[:server] = con.server_info
+          info[:server]         = con.server_info
         end
       # BOZO !! Need to figure out links strategy!
       elsif path_name_tokens.size == 3
         db_name = path_name_tokens.pop
-        info[:links] = OrderedHash.new
         connect_for( zone ) do |con|          
           db = con.db( db_name )
           info[:links][:manage] = "/databases/1"
-          # info[:links][:drop]   = "/databases/drop/"
-          info[:size]        = to_mb( con.database_info[db_name] )
-          info[:node]        = db.nodes
-          info[:collections] = collection_names( db ).size
-          info[:error]       = db.error
-          info[:last_status] = db.last_status
+          info[:size]           = to_mb( con.database_info[db_name] )
+          info[:node]           = db.nodes
+          info[:collections]    = collection_names( db ).size
+          info[:error]          = db.error
+          info[:last_status]    = db.last_status
         end
-      elsif path_name_tokens.size == 4
-        info[:links] = OrderedHash.new        
+      elsif path_name_tokens.size == 4        
         cltn_name = path_name_tokens.pop
         db_name   = path_name_tokens.pop
         connect_for( zone ) do |con|
@@ -136,7 +139,6 @@ module Mongo3
           indexes = db.index_information( cltn_name )
                     
           info[:links][:manage] = "/collections/1"
-          # info[:links][:drop]   = "/collections/drop/"          
           info[:size]           = cltn.count
           info[:indexes]        = format_indexes( indexes ) if indexes and !indexes.empty?
         end
@@ -253,19 +255,44 @@ module Mongo3
     # Build zone tree
     def build_partial_tree( path_names )
       path_name_tokens = path_names.split( "|" )      
-      bm_zone           = path_name_tokens[1]
+      bm_zone          = path_name_tokens[1]
       bm_cltn          = path_name_tokens.pop if path_name_tokens.size == 4
       bm_db            = path_name_tokens.pop if path_name_tokens.size == 3
       
       root = Node.make_node( "home" )
       
       # iterate thru zones
+      adjacencies = {}      
       config.each_pair do |zone, info|
         node = Node.new( zone, zone, :dyna => true )
         root << node
         
+        adjs = adjacencies[zone]
+        if adjs
+          node.mark_master!
+          adjs.each { |n| node << n }
+        end
+        masters = slave?( zone )
+        
+        unless masters.empty?
+          node.mark_slave!     
+          masters.each do |master|
+            host, port  = master.split( ":" )
+            master_zone = zone_for( host, port )
+            next unless master_zone
+            master_node = root.find( "home|#{master_zone}")
+            if master_node
+              master_node.mark_master!
+              master_node << node
+            else
+              adjacencies[master_zone] = [] unless adjacencies[master_zone]
+              adjacencies[master_zone] << node
+            end
+          end
+        end
+                
         next unless node.name == bm_zone
-
+                
         connect_for( zone ) do |con|      
           count = 0
           data  = { :dyna => true }
@@ -366,7 +393,6 @@ module Mongo3
       end
       
       # Connects to mongo given an zone
-      # BOZO !! Auth... 
       def connect_for( zone, &block )
         info = landscape[zone]
         # puts ">>> Connecting for #{zone} -- #{info['host']}-#{info['port']}"
@@ -404,6 +430,7 @@ module Mongo3
    
       # Convert size to mb
       def to_mb( val )
+        return 0 unless val
         return val if val < 1_000_000
         "#{format_number(val/1_000_000)}Mb"
       end
@@ -420,11 +447,17 @@ module Mongo3
         end
         nil
       end
+
+      # Check if this is a slave or a db path   
+      def slave_zone?( tokens )
+        return false unless tokens.size == 3
+        return false unless config.keys.include?( tokens.last )
+        true
+      end
       
       # Initialize the mongo installation landscape
       def config
         unless @config
-puts ">>>> Loading config from file"          
           @config = YAML.load_file( @config_file )
         end
         @config

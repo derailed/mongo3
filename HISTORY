@@ -19,3 +19,11 @@
   o cleaned up ui
   o added edit on main context window
   o added index crud for collection
+  
+0.0.6 - Bug fixes and minor cleanups
+
+0.0.7 - Big changes !
+  o Added user administration - should be able to crub users on zone now
+  o Added mongo based session store using mongo_rack. (Per Kyle's suggestion! ). This is now the default session store.
+    You can alternatively still use memcache ( see README for instructions )
+  o Bug fixes and some cleanup
