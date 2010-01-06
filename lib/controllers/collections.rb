@@ -59,7 +59,9 @@ module Collections
     json = params[:search].gsub( /'/, "\"" )
     if json.empty?
       @query = {}
-      @sort  = {}
+      @sort  = []
+      session[:query_params] = [@query,@sort]
+      load_cltn
     else
       tokens = json.split( "|" )
       begin
@@ -106,7 +108,7 @@ module Collections
   # ===========================================================================
   helpers do    
     def load_cltn( page=1 )    
-      query_params = session[:query_params] || [{},[]]
+      query_params = session[:query_params] || [Hash.new,[]]
       if ( !query_params.first or query_params.first.empty?) and ( !query_params.last or query_params.last.empty? )
         @query = nil
       else  

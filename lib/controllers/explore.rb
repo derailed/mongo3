@@ -26,6 +26,10 @@ module Explore
     erb :'explore/explore'
   end
 
+  get "/fred/:duh" do
+    "Hello World #{params[:duh]}"
+  end
+  
   # -----------------------------------------------------------------------------
   get '/explore/back' do  
     session[:selected_cols] = nil
@@ -58,7 +62,7 @@ module Explore
   end
   
   # -----------------------------------------------------------------------------
-  get '/explore/more_data/:path_ids/:path_names/*' do
+  get '/explore/more_data/:path_ids/:path_names/' do
     path_ids   = params[:path_ids]
     parent_id  = path_ids.split("|").last
     path_names = params[:path_names]

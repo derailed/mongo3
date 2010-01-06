@@ -1,3 +1,5 @@
+require 'yaml'
+
 # BOZO !! Time to refact no?
 module Mongo3
   class Connection
@@ -186,7 +188,7 @@ module Mongo3
         
         list = WillPaginate::Collection.create( page, per_page, count ) do |pager|
           offset = (page-1)*per_page
-          sort   = query_params.last.empty? ? [ ['_id', Mongo::DESCENDING] ] : query_params.last        
+          sort   = query_params.last.empty? ? [ ['_id', Mongo::DESCENDING] ] : query_params.last
           results = cltn.find( query_params.first, 
             :sort  => sort,
             :skip  => offset, 
@@ -224,7 +226,7 @@ module Mongo3
           host, port = master.split( ":" )
           master_zone = zone_for( host, port )
           next unless master_zone
-          master_node = root.find( "home|#{master_zone}")
+          master_node = root.find( master_zone )
           if master_node
             master_node.mark_master!
             master_node << node
@@ -281,7 +283,7 @@ module Mongo3
             host, port  = master.split( ":" )
             master_zone = zone_for( host, port )
             next unless master_zone
-            master_node = root.find( "home|#{master_zone}")
+            master_node = root.find( master_zone )
             if master_node
               master_node.mark_master!
               master_node << node

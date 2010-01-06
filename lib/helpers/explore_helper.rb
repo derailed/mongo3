@@ -15,9 +15,12 @@ module ExploreHelper
     def path_type( path )
       tokens = path.split( "|" )
       case tokens.length 
-        when 1 : "zone"
-        when 2 : "database"
-        else     "collection"
+        when 1 
+          "zone"
+        when 2 
+          "database"
+        else     
+          "collection"
       end            
     end
     

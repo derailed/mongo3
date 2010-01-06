@@ -1,12 +1,12 @@
-require File.join(File.dirname(__FILE__), %w[.. spec_helper])
+require File.expand_path( File.join( File.dirname(__FILE__), %w[.. spec_helper] ) )
 require 'ostruct'
 require 'mongo'
 
 describe Mongo3::Connection do
   
   before( :all ) do
-    @con    = Mongo::Connection.new( 'localhost', 27017 )
-    @db   = @con.db( 'mongo3_test_db', :strict => true )    
+    @con    = Mongo::Connection.new( 'localhost', 12345 )
+    @db     = @con.db( 'mongo3_test_db', :strict => true )
     @mongo3 = Mongo3::Connection.new( File.join(File.dirname(__FILE__), %w[.. landscape.yml]) )    
   end
   
@@ -35,6 +35,7 @@ describe Mongo3::Connection do
   it "should clear out a cltn correctly" do
     @mongo3.clear_cltn( "home|test|mongo3_test_db|test1_cltn" )
     @db['test1_cltn'].count.should == 0
+    @db['test2_cltn'].count.should == 10
   end
   
   it "should delete a row correctly" do
@@ -60,7 +61,7 @@ describe Mongo3::Connection do
         
     test.should_not be_nil
     test['host'].should == 'localhost'
-    test['port'].should == 27017
+    test['port'].should == 12345
   end
   
   it "should build a tree correctly" do
@@ -87,9 +88,9 @@ describe Mongo3::Connection do
     
     it "should pull db info correctly" do
       info = @mongo3.show( "home|test|mongo3_test_db" )
-      info.size.should               == 7
-      info[:collections].size.should == 4
-      info[:title].should            == "mongo3_test_db"      
+      info.size.should          == 7
+      info[:collections].should == 2
+      info[:title].should       == "mongo3_test_db"      
     end
     
     it "should pull cltn info correctly" do
@@ -119,7 +120,7 @@ describe Mongo3::Connection do
     
     it "should build a partial tree correctly" do
       root = @mongo3.build_partial_tree( "home|test|mongo3_test_db" )
-      root.find( "test_2" ).children.should have(0).items
+      root.find( "test_0" ).children.should have(2).items
     end
   end
 

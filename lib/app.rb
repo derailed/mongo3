@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'sinatra'
 require 'forwardable'
-require File.join( File.dirname(__FILE__), 'mongo3.rb' )
+require File.expand_path( File.join( File.dirname(__FILE__), 'mongo3.rb' ) )
 require 'mongo'
 gem 'agnostic-will_paginate'
 require 'will_paginate'

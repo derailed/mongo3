@@ -8,14 +8,14 @@ module CrumbHelper
       @crumbs = []
       count   = 0
       path_name_tokens.each do |crumb|
-        @crumbs << [crumb, "/explore/center/#{path_name_tokens[0..count].join( "|" )}/#{path_id_tokens[0..count].join( "|") }"]
+        @crumbs << [crumb, "/explore/center/#{CGI.escape(path_name_tokens[0..count].join( "|" ))}/#{CGI.escape(path_id_tokens[0..count].join( "|")) }"]
         count += 1
       end
       session[:crumbs] = @crumbs
     end
     
     def pop_crumb!( path_ids, path_names )
-      path  = "/explore/center/#{path_ids}/#{path_names}"
+      path  = "/explore/center/#{CGI.escape(path_ids)}/#{CGI.escape(path_names)}"
       level = 0
       range = nil
       @crumbs.each do |pair|
@@ -38,7 +38,7 @@ module CrumbHelper
       titles = @crumbs.map{ |p| p.first }
       unless titles.include?( title )
         @crumbs.pop if @crumbs.size == 3
-        @crumbs << [title, url]
+        @crumbs << [title, CGI.escape(url)]
         session[:crumbs] = @crumbs
       end
     end

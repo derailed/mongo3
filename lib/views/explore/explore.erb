@@ -106,7 +106,7 @@
           {
             Log.write( "fetching new data..." );
             var url = "/explore/more_data/";
-            url     += node.data.path_ids + "/" + node.data.path_names + "/";
+            url     += escape(node.data.path_ids) + "/" + escape(node.data.path_names) + "/";
             $.ajax( {
               dataType: 'script',
               type:     'GET',
@@ -137,7 +137,7 @@
     onBeforePlotLine: function(adj) {
       var nodeTo   = adj.nodeTo;
       var nodeFrom = adj.nodeFrom;
-      if( nodeFrom.data.slave && nodeTo.data.master )
+      if( (nodeFrom.data.slave && nodeTo.data.master) || (nodeFrom.data.master && nodeTo.data.slave) )
       {
         adj.data.$lineWidth = 3;
         adj.data.$color     = "#f00";
