@@ -42,7 +42,7 @@ module MainHelper
     end
     
     # Add thousand markers
-    def format_number( value )      
+    def format_number( value )
       return value.to_s.gsub(/(\d)(?=\d{3}+(\.\d*)?$)/, '\1,') if value.instance_of?(Fixnum)
       value
     end

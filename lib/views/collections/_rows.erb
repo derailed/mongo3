@@ -21,7 +21,7 @@
             <img class="wait" id="wait_<%=id%>" src="/images/loading.gif"></img>          
           </td>
           <% @selected_cols.each do |k| %>
-            <td><%= format_number(cltn[k]) %></td>
+            <td><%= format_value(cltn[k]) %></td>
           <% end %>
         </tr>
       <% end %>
