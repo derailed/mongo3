@@ -311,7 +311,7 @@ fieldset {
 }
 fieldset.check {
   float:  left;
-  width:  20%;
+  width:  25%;
 }
 
 p.ctx {
@@ -335,10 +335,13 @@ table.cltn {
 table.cltn thead {
   font-weight:   bold;
   border-bottom: 1px #c1c1c1 solid;
-  color:         #c1c1c1;
+  color:         #ff8f00;
 }
-table.cltn tr {
-  color: #fff;
+table.cltn tbody td {
+  padding: 0px 5px 0px 0px;
+}
+table.cltn tbody tr {
+  color: #c1c1c1;
 }
 table.cltn tr.highlight {
   color:  #92b948;

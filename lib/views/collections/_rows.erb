@@ -5,23 +5,25 @@
 <%= partial :'collections/search_form' %>
 
 <div class="borders" style="padding:10px;">
-  <table id="cltn" class="cltn" border="0" cellpadding="10" cellspacing="20">
+  <table id="cltn" class="cltn" border="0">
     <thead>
-      <th width="2%">&nbsp;</td>
-      <% @selected_cols.each do |col| %>
-        <th><%=col%></th>
-      <% end %>
+      <tr>
+        <th width="2%">&nbsp;</td>
+        <% @selected_cols.each do |col| %>
+          <th width="20%"><%=col%></th>
+        <% end %>
+      </tr>
     </thead>
     <tbody>
       <% @cltn.each do |cltn| %>
         <% id = cltn['_id'] %>
         <tr id="<%=id%>" valign="top">
-          <td id="<%=id%>">
+          <td id="<%=id%>" style="margin:0px;padding:0px">
             <img class="delete" id="<%=id%>" src="/images/delete.png" title="delete this record"/>
             <img class="wait" id="wait_<%=id%>" src="/images/loading.gif"></img>          
           </td>
           <% @selected_cols.each do |k| %>
-            <td><%= format_value(cltn[k]) %></td>
+            <td align="<%=align_for( cltn[k])%>"><%= format_value(cltn[k]) %></td>
           <% end %>
         </tr>
       <% end %>
@@ -35,7 +37,7 @@
 
 <script>
   $( function() {
-    $("table#cltn tr" ).hover( 
+    $("table#cltn tbody tr" ).hover( 
       function() { 
         $(this).addClass( 'highlight' );
         $("td#" + $(this).attr('id') + " img.delete" ).show();

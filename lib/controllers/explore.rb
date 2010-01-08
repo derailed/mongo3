@@ -16,6 +16,9 @@ module Explore
 
   # -----------------------------------------------------------------------------
   get '/explore' do
+    session[:selected_cols] = nil
+    session[:query_params]  = nil
+    
     root   = options.connection.build_tree
     @root  = root.to_adjacencies
     @nodes = root.children
@@ -24,10 +27,6 @@ module Explore
     reset_paths!
 
     erb :'explore/explore'
-  end
-
-  get "/fred/:duh" do
-    "Hello World #{params[:duh]}"
   end
   
   # -----------------------------------------------------------------------------
