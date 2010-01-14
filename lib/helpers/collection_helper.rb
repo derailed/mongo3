@@ -22,9 +22,9 @@ module CollectionHelper
       elsif value.is_a?(Hash)
         buff = []
         value.each_pair { |k,v| buff << "#{k}:#{format_value(v)}"}
-        buff.join( "," )
+        buff.join( ", " )
       elsif value.is_a?(Array)
-        value.join(",")        
+        (value.empty? ? "[]" : value.join(", "))
       else
         value
       end        

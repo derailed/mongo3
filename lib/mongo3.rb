@@ -1,9 +1,9 @@
 module Mongo3
   
   # :stopdoc:
-  VERSION = '0.0.9' unless defined? Mongo3::VERSION
+  VERSION = '0.0.9'                                                          unless defined? Mongo3::VERSION
   LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR unless defined? Mongo3::LIBPATH
-  PATH = ::File.dirname(LIBPATH) + ::File::SEPARATOR unless defined? Mongo3::LIBPATH
+  PATH    = ::File.dirname(LIBPATH) + ::File::SEPARATOR                      unless defined? Mongo3::PATH
   # :startdoc:
 
   # Returns the version string for the library.
@@ -48,9 +48,6 @@ module Mongo3
 
     Dir.glob(search_me).sort.each {|rb| load rb}
   end
-
-end  # module Mongo3
+end
 
 Mongo3.require_all_libs_relative_to(__FILE__)
-
-# EOF

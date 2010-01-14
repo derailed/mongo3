@@ -5,12 +5,12 @@
 <%= partial :'collections/search_form' %>
 
 <div class="borders" style="padding:10px;">
-  <table id="cltn" class="cltn" border="0">
+  <table id="cltn" class="cltn" border="1" cellspacing="10">
     <thead>
       <tr>
-        <th width="2%">&nbsp;</td>
+        <th width="5%">&nbsp;</td>
         <% @selected_cols.each do |col| %>
-          <th width="20%"><%=col%></th>
+          <th width="20%" align="<%=align_for( @cltn[0][col] )%>"><%=col%></th>
         <% end %>
       </tr>
     </thead>
@@ -23,7 +23,7 @@
             <img class="wait" id="wait_<%=id%>" src="/images/loading.gif"></img>          
           </td>
           <% @selected_cols.each do |k| %>
-            <td align="<%=align_for( cltn[k])%>"><%= format_value(cltn[k]) %></td>
+            <td align="<%=align_for( cltn[k] ) %>"><%= format_value(cltn[k]) %></td>
           <% end %>
         </tr>
       <% end %>

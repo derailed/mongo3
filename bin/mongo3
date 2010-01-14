@@ -33,20 +33,21 @@ Main {
       puts "\n"*2  
       puts ">>> Opening console..."
       puts "\n"*2
-      open( "http://localhost:6666/explore" )
+      open( "http://localhost:#{default_port}/explore" )
     end
     
     # Clearing args for franky!
     ARGV.clear
     require 'sinatra'    
     require File.join(File.dirname(__FILE__), %w[.. lib app.rb])
-    Sinatra::Application.run! :port => 6666, :environment => 'production'
+    Sinatra::Application.run! :port => default_port, :environment => 'production'
   end
   
+  # default port
+  def default_port() 6666; end
+  
   # sleepy time...
-  def sleep_time
-    3
-  end
+  def sleep_time() 3; end
   
   # open console...
   def open(path)
