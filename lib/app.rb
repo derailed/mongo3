@@ -14,7 +14,7 @@ set :views , File.join( File.dirname(__FILE__), %w[views] )
 # Configurations
 
 configure :production do
-  set :logging, true  
+  set :logging, false  
 end
 
 configure do

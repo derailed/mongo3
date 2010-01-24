@@ -43,9 +43,7 @@ module Explore
     
     crumbs_from_path( path_ids, path_names )
     
-puts "PATHS #{path_names} -- #{@node_id}"    
     @root  = options.connection.build_partial_tree( path_names )
-Mongo3::Node.dump( @root )    
     @nodes = @root.find( @node_id ).children
          
     erb :'explore/explore'

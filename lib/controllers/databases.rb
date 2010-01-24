@@ -16,7 +16,6 @@ module Databases
       session[:path_ids]   = path_ids.join( "|" )
     end 
       
-puts "DB PATH #{path_names.inspect}"
     @cltns     = options.connection.paginate_db( path_names, page, 10 )
     @back_url  = "/explore/back"
     
