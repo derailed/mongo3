@@ -3,6 +3,7 @@ require 'json'
 module Collections
   
   # ---------------------------------------------------------------------------
+  # BOZO - Move to indexes ctrl
   post "/collections/create_index/" do
     json   = params[:index].gsub( /'/, "\"" )
     tokens = json.split( "|" )
@@ -34,7 +35,7 @@ module Collections
   # --------------------------------------------------------------------------- 
   # Paginate on a collection
   get "/collections/:page" do    
-    @back_url  = "/explore/back"
+    @back_url  = "/databases/1"
     @page      = params[:page].to_i || 1
 
     @indexes = options.connection.indexes_for( session[:path_names] )
@@ -46,9 +47,6 @@ module Collections
   
   # ---------------------------------------------------------------------------
   post "/collections/refresh/:page/" do
-    selected_cols = params[:cols].keys.sort    
-    session[:selected_cols] = selected_cols
-
     load_cltn( params[:page].to_i )
         
     erb :'collections/update.js', :layout => false
@@ -119,12 +117,6 @@ module Collections
       path_names     = session[:path_names]
       
       @cltn          = options.connection.paginate_cltn( path_names, query_params, @page, 15 )
-      @cols          = []
-      @selected_cols = []      
-      unless @cltn.empty?
-        @cols          = @cltn.first.keys.sort
-        @selected_cols = session[:selected_cols] || @cols[0...5]
-      end
     end
   end
 end

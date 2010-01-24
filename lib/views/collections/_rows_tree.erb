@@ -1,0 +1,81 @@
+<div id="summary" style="clear:both">
+  <%= page_entries_info @cltn, :entry_name => 'item' %>
+</div>
+
+<%= partial :'collections/search_form' %>
+
+<div class="borders" style="padding:10px;">
+  <div id="tree">
+    <ul>
+      <% count=0;@cltn.each do |cltn| %>
+        <% id = cltn['_id'] %>
+        <li><span><ins></ins><%=id%></span>
+          <div class="delete">
+            <img rel="div#confirm_drop" class="delete" style="float:left;" id="<%=id%>" src="/images/delete.png" title="delete this record"/>
+            <img class="wait" id="wait_<%=id%>" src="/images/loading.gif"/>
+          </div>
+          <ul>
+            <% cltn.keys.sort.each do |k| %>
+              <% next if k == '_id' %>
+              <%= format_nodes( cltn[k], k ) %>
+            <% count+=1;end %>
+          </ul>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+
+<div id="links">
+  <%= will_paginate @cltn, :params => { :url => '/collections' } %>
+</div>      
+
+<div class="modal" id="confirm_drop" style="font-size:1em">
+   <p>Dropping document. Are you sure?</p>
+   <p style="margin:10px">
+     <button class="close yes">Yes</button>
+     <button class="close">No</button>
+   </p>
+</div>
+
+<script>
+  $( function() {    
+  	$('div#tree').tree( { 
+  	  ui: { theme_name: 'mongo3', theme_path: '/javascripts/themes/mongo3/style.css'},
+  	  "default" : {
+  	    renameable: false,
+  	    deletable:  false,
+  	    draggable:  false,
+  	    creatable:  false  	    
+  	  }
+  	});
+  	  	
+    $('img.delete' ).overlay( {
+      expose: {
+         color:     '#212021',
+         loadSpeed: 200,
+         opacity:   0.9 
+      },
+      onBeforeLoad: function() {
+        $("button.yes").attr( 'id', this.getTrigger().attr('id') );
+      },
+      closeOnClick: false
+    });
+        
+    $( 'button.yes' ).click( function() {
+      var self = $(this);
+      $.ajax({
+        data:     {id:self.attr('id')},
+        dataType: 'script',
+        type:     'post',
+        url:      '/collections/delete/',
+        beforeSend: function() { 
+          $('img#wait_' + self.attr('id') ).show(); 
+        },
+        complete:   function() {
+          $('img#wait_' + self.attr('id') ).hide();
+        }
+      });
+    });
+  });
+</script>

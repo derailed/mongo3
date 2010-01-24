@@ -34,8 +34,10 @@
 * CRUD on dbs, collections, indexes [done]
 * Administer users [done]
 * Collection rename
+* Database creation
 * Manage logs
 * Support for shards and replication
+* Add support for drilling down array and embedded documents [done]
 
 == DEPENDENCIES
 

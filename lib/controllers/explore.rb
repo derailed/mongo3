@@ -7,7 +7,7 @@ module Explore
     @node_id   = params[:db_id]
     db_name    = params[:db_name].gsub( /\(\d+\)/, '' )
     
-    options.connection.drop_database( session[:path_names], db_name )
+    options.connection.drop_db( "#{session[:path_names]}|#{db_name}" )
     
     flash_it!( :info, "Database `#{db_name} was dropped successfully!" )
              
@@ -43,14 +43,16 @@ module Explore
     
     crumbs_from_path( path_ids, path_names )
     
+puts "PATHS #{path_names} -- #{@node_id}"    
     @root  = options.connection.build_partial_tree( path_names )
+Mongo3::Node.dump( @root )    
     @nodes = @root.find( @node_id ).children
          
     erb :'explore/explore'
   end
   
   # -----------------------------------------------------------------------------
-  get '/explore/show/:path_ids/:path_names' do
+  get '/explore/info/:path_ids/:path_names' do
     path_ids   = params[:path_ids]
     path_names = params[:path_names]
 
@@ -76,6 +78,21 @@ module Explore
     @nodes    = root.children
     
     erb :'explore/more_data_js', :layout => false
+  end
+
+  # ---------------------------------------------------------------------------
+  get "/explore/show/:path_ids/:path_names" do
+    path_ids   = params[:path_ids]
+    path_names = params[:path_names]
+    
+    # crumbs_from_path( path_ids, path_names )
+    update_paths!( path_ids, path_names )
+
+    if cltn_path?( path_ids )
+      erb :'explore/load_collection.js', :layout => false
+    else
+      erb :'explore/load_database.js', :layout => false
+    end
   end
 
   # -----------------------------------------------------------------------------

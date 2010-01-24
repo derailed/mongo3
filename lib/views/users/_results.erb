@@ -8,7 +8,7 @@
   <div class="borders" style="padding:10px">
     <table id="cltn" class="cltn" border="0" cellpadding="10" cellspacing="20">
       <thead>
-        <th width="2%">&nbsp;</th>
+        <th width="3%">&nbsp;</th>
         <th>Id</th>
         <th>Name</th>
       </thead>
@@ -43,7 +43,7 @@
 
 <script>
   $( function() {
-    $("table#cltn tr" ).hover( 
+    $("table#cltn tbody tr" ).hover( 
       function() { 
         $(this).addClass( 'highlight' );
         $("td#" + $(this).attr('id') + " img.drop" ).show();

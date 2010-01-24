@@ -4,7 +4,19 @@ module Databases
   get "/databases/:page" do
     page       = params[:page].to_i || 1
     path_names = session[:path_names]
-          
+    tokens     = path_names.split( "|" )
+    
+    # Could be we have a cltn path. if so adjust for it
+    if tokens.size > 3
+      tokens.pop
+      session[:path_names] = tokens.join( "|") 
+      path_names           = session[:path_names]      
+      path_ids             = session[:path_ids].split( "|" )
+      path_ids.pop
+      session[:path_ids]   = path_ids.join( "|" )
+    end 
+      
+puts "DB PATH #{path_names.inspect}"
     @cltns     = options.connection.paginate_db( path_names, page, 10 )
     @back_url  = "/explore/back"
     

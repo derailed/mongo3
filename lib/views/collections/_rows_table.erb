@@ -5,7 +5,7 @@
 <%= partial :'collections/search_form' %>
 
 <div class="borders" style="padding:10px;">
-  <table id="cltn" class="cltn" border="1" cellspacing="10">
+  <table id="cltn" class="cltn" border="0" cellspacing="10">
     <thead>
       <tr>
         <th width="5%">&nbsp;</td>
@@ -55,7 +55,7 @@
         url:      '/collections/delete/',
         beforeSend: function() { $('img#_wait_' + id ).show(); },
         complete:   function() { $('img#_wait_' + id ).hide(); }
-      }); 
+      });
     });    
   });
 </script>

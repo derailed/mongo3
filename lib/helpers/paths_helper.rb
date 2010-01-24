@@ -1,6 +1,21 @@
 module PathHelper
   helpers do
     
+    # looking at zone path?    
+    def zone_path?( path )
+      path.split( "|" ).size == 1
+    end
+
+    # looking at db path?    
+    def db_path?( path )
+      path.split( "|" ).size == 3
+    end
+
+    # looking at cltn path?
+    def cltn_path?( path )
+      path.split( "|" ).size == 4
+    end
+    
     def reset_paths!
       session[:path_ids]   = "home"
       session[:path_names] = "home"

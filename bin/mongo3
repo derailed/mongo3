@@ -44,7 +44,7 @@ Main {
   end
   
   # default port
-  def default_port() 6666; end
+  def default_port() 6663; end
   
   # sleepy time...
   def sleep_time() 3; end

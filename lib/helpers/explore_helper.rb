@@ -1,11 +1,6 @@
 module ExploreHelper 
   
   helpers do    
-
-    # looking at zone path?    
-    def zone_path?( path )
-      path.split( "|" ).size == 1
-    end
     
     # compute legend title
     def legend_title( path )

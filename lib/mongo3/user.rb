@@ -8,19 +8,25 @@ module Mongo3
     # add a new user    
     def add( path, user_name, password )
       connect_for( path ) do |con|
-        admin_db  = con.db('admin')
-        user_cltn = admin_db[Mongo::DB::SYSTEM_USER_COLLECTION]        
+        user_cltn = users( con )
 
         row = { :user => user_name }        
         user = user_cltn.find_one( row )
         raise "User #{user_name} already exists!" if user
         
-        row[:pwd] = admin_db.send( :hash_password, user_name, password )
-        user_cltn.save( row )
+        row[:pwd] = user_cltn.db.send( :hash_password, user_name, password )
+        return user_cltn.save( row )
       end     
     end
     
+    def clear!( path )
+      connect_for( path ) do |con|
+        res = users( con ).remove( {} )
+      end            
+    end
+    
     def rename( zone, old_name, new_name )
+      raise "NYI"
     end
     
     def delete( path, id )

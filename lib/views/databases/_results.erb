@@ -6,18 +6,20 @@
   <div class="borders" style="padding:10px">
     <table id="cltn" class="cltn" border="0" cellpadding="10" cellspacing="20">
       <thead>
-        <th width="2%">&nbsp;</th>
-        <% cols = @cltns.first.keys %>
-        <% cols.each do |col| %>
-          <th align="<%=align_for( @cltns.first[col] )%>"><%=col%></th>
-        <% end %>
+        <tr>
+          <th width="3%">&nbsp;</th>
+          <% cols = @cltns.first.keys %>
+          <% cols.each do |col| %>
+            <th align="<%=align_for( @cltns.first[col] )%>"><%=col%></th>
+          <% end %>
+        </tr>
       </thead>
       <tbody>
         <% count = 0; @cltns.each do |cltn| %>
           <tr id="<%=count%>" valign="top">
             <td id="<%=count%>">
               <img rel="div#confirm_drop" class="drop" id="<%=cltn[:name]%>" rel="<%=count%>" src="/images/delete.png" title="drop this collection" style="display:none"/>
-              <img class="wait" id="wait_<%=count%>" src="/images/loading.gif"></img>
+              <img class="wait" id="wait_<%=count%>" src="/images/loading.gif"/>
             </td>
             <td><a href="/databases/collection/<%=cltn[:name]%>/"><%= cltn[:name] %></a></td>
             <td align="<%=align_for( cltn[:count] )%>"><%= format_number(cltn[:count]) %></td>
@@ -43,7 +45,7 @@
 
 <script>
   $( function() {
-    $("table#cltn tr" ).hover( 
+    $("table#cltn tbody tr" ).hover( 
       function() { 
         $(this).addClass( 'highlight' );
         $("td#" + $(this).attr('id') + " img.drop" ).show();

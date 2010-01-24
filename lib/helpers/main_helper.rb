@@ -61,6 +61,11 @@ module MainHelper
     end
     
     def partial( page, options={} )
+      if object = options.delete(:object)        
+        template = page.to_s.split("/").last
+        options.merge!( :locals => { template.to_sym => object } )
+      end
+      
       if page.to_s.index( /\// )
         page = page.to_s.gsub( /\//, '/_' ) 
       else 

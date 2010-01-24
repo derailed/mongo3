@@ -1,6 +1,8 @@
 require 'yaml'
 
 # BOZO !! Time to refact no?
+# TODO !! Arg check and errors
+# TODO !! Add logging
 module Mongo3
   class Connection
     
@@ -8,15 +10,7 @@ module Mongo3
       @config_file = config_file
     end
 
-    # drop a database using context and db name
-    def drop_database( path_names, db_name )
-      path_name_tokens = path_names.split( "|" )
-      zone              = path_name_tokens[1]      
-      connect_for( zone ) do |con|
-        con.drop_database( db_name )
-      end      
-    end
-    
+    # drop a db using a db path    
     def drop_db( path_names )
       path_name_tokens = path_names.split( "|" )
       zone              = path_name_tokens[1]
@@ -42,12 +36,12 @@ module Mongo3
 
     def drop_index( path_names, index )
       path_name_tokens = path_names.split( "|" )
-      zone              = path_name_tokens[1]      
+      zone              = path_name_tokens[1]
       connect_for( zone ) do |con|
         cltn_name = path_name_tokens.pop
         db_name   = path_name_tokens.pop
         db        = con.db( db_name )
-        cltn      = db[cltn_name]
+        cltn      = db[cltn_name]        
         cltn.drop_index( index )
       end
     end
@@ -84,7 +78,7 @@ module Mongo3
         db_name   = path_name_tokens.pop
         db        = con.db( db_name )
         cltn      = db[cltn_name]
-        cltn.remove
+        cltn.remove( {} )
       end
     end
            
@@ -96,7 +90,7 @@ module Mongo3
         db_name   = path_name_tokens.pop
         db        = con.db( db_name )
         cltn      = db[cltn_name]
-        cltn.remove( {:_id => Mongo::ObjectID.from_string(id) } )
+        res = cltn.remove( {:_id => Mongo::ObjectID.from_string(id) } )
       end
     end
          
@@ -150,7 +144,7 @@ module Mongo3
     end
 
     def paginate_db( path_names, page=1, per_page=10 )
-      path_name_tokens = path_names.split( "|" )
+      path_name_tokens = path_names.split( "|" )      
       zone              = path_name_tokens[1]
       list             = nil
       connect_for( zone ) do |con|
@@ -189,7 +183,15 @@ module Mongo3
         list = WillPaginate::Collection.create( page, per_page, count ) do |pager|
           offset = (page-1)*per_page
           sort   = query_params.last.empty? ? [ ['_id', Mongo::DESCENDING] ] : query_params.last
-          results = cltn.find( query_params.first, 
+          query  = query_params.first
+          
+          # Scan for regexes...
+          query.each_pair do |k,v|
+            if v.is_a?( String ) and v.index( /^\// )
+              query[k] = Regexp.new( v.gsub( "/", '' ) )
+            end
+          end
+          results = cltn.find( query, 
             :sort  => sort,
             :skip  => offset, 
             :limit => per_page ).to_a          
@@ -398,14 +400,23 @@ module Mongo3
       # Connects to mongo given an zone
       def connect_for( zone, &block )
         info = landscape[zone]
-        # puts ">>> Connecting for #{zone} -- #{info['host']}-#{info['port']}"
-        con = Mongo::Connection.new( info['host'], info['port'], { :slave_ok => true } )
+        raise "Unable to find zone info in config file for zone `#{zone}" unless info
+        raise "Check your config. Unable to find `host information" unless info['host']
+        raise "Check your config. Unable to find `port information" unless info['port']
         
-        if info['user'] and info['password']
-          con.db( 'admin' ).authenticate( info['user'], info['password'] )
+        begin
+          con = Mongo::Connection.new( info['host'], info['port'], { :slave_ok => true } )
+        
+          if info['user'] and info['password']
+            con.db( 'admin' ).authenticate( info['user'], info['password'] )
+          end
+          yield con        
+          con.close()
+        rescue => boom
+          # puts boom
+          # puts boom.backtrace.each {|l| puts l }          
+          raise "MongoDB connection failed for `#{info['host'].inspect}:#{info['port'].inspect}"
         end
-        yield con        
-        con.close()
       end
 
       # db request occurs within dist 2
@@ -461,10 +472,14 @@ module Mongo3
       # Initialize the mongo installation landscape
       def config
         unless @config
-          @config = YAML.load_file( @config_file )
+          begin
+            @config = YAML.load_file( @config_file )
+          rescue => boom
+            @config = nil
+            raise "Unable to grok yaml landscape file. #{boom}"
+          end
         end
         @config
-      end
-            
+      end            
   end
 end

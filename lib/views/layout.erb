@@ -3,20 +3,20 @@
   <head>
     <title>M O N G O 3</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />    
-    <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>    
+    <link rel="icon" href="/images/favicon.png" type="image/x-icon"/>
+    <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon"/>
     <%= stylesheets %w[mongo3] %>
-    <%= javascripts %w[jquery_min jquery_ui_min jquery.tools.min application jit.min] %>
+    <%= javascripts %w[jquery_min jquery_ui_min jquery.tools.min application jit.min jquery.tree.min jquery.tiptip.min] %>
   </head>
 
   <body id="body">
     <div id="overall">
       <div id="logo">
         <a href="/explore" style="float:left">
-          <img src='/images/mongo3.png' style="border:none"/>
-          <span id="version"><%=Mongo3.version%></span>
+          <img id="logo" src='/images/mongo3.png'/>
+          <div id="version"><%=Mongo3.version%></div>
         </a>
-        <div class="flash">Hello World</div>
+        <div class="flash"></div>
       </div>      
       <div id="main">
         <%= yield %>
@@ -24,3 +24,9 @@
     </div>      
   </body>
 </html>
+
+<script>
+  $( function() {
+    $( "[title]").tipTip( {maxWidth:'auto', edgeOffset:5} );
+  });
+</script>

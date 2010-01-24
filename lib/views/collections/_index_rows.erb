@@ -3,16 +3,18 @@
 <div class="borders" style="padding:10px">
   <table id="indexes" class="cltn" border="0" cellpadding="10" cellspacing="20">
     <thead>
-      <th width="2%">&nbsp;</td>
-      <th>Name</th>
-      <th>Settings</th>      
+      <tr>
+        <th width="3%">&nbsp;</th>
+        <th>Name</th>
+        <th>Settings</th>
+      </tr>
     </thead>
     <tbody>
       <% @indexes.keys.sort.each do |name| %>
         <tr id="<%=name%>" valign="top">
           <td id="<%=name%>">
-            <img class="del_index" id="<%=name%>" src="/images/delete.png" title="delete this index"/>
-            <img class="wait" id="wait_<%=name%>" src="/images/loading.gif"></img>
+            <img rel="div#confirm_drop" class="drop" style="display:none" id="<%=name%>" src="/images/delete.png" title="delete this index"/>
+            <img class="wait" id="wait_<%=name%>" src="/images/loading.gif"/>
           </td>
           <td><%=name%></td>
           <% buff = [];@indexes[name].each do |pair| %>
@@ -25,30 +27,53 @@
   </table>
 </div>
 
+<div class="modal" id="confirm_drop" style="font-size:1em">
+   <p>Dropping index. Are you sure?</p>
+   <p style="margin:10px">
+     <button class="close yes">Yes</button>
+     <button class="close">No</button>
+   </p>
+</div>
+
 <script>
   $( function() {
-    $("table#indexes tr" ).hover( 
+    $("table#indexes tbody tr" ).hover( 
       function() { 
         $(this).addClass( 'highlight' );
-        $("td#" + $(this).attr('id') + " img.del_index" ).show();
+        $("td#" + $(this).attr('id') + " img.drop" ).show();
       }, 
       function() { 
         $(this).removeClass( 'highlight' );      
-        $("td#" + $(this).attr('id') + " img.del_index" ).hide();
+        $("td#" + $(this).attr('id') + " img.drop" ).hide();
       });
-    $( "img.del_index" ).click( function() {
-      var id = $(this).attr('id');
+      
+    $('img.drop' ).overlay( {
+      expose: {
+         color:     '#212021',
+         loadSpeed: 200,
+         opacity:   0.9 
+      },
+      onBeforeLoad: function() {
+        $("button.yes").attr( 'id', this.getTrigger().attr('id') );
+      },
+      closeOnClick: false
+    });
+        
+    $( 'button.yes' ).click( function() {
+      var self = $(this);
       $.ajax({
-        data:     {id: id},
+        data:     {id:self.attr('id')},
         dataType: 'script',
         type:     'post',
         url:      '/collections/drop_index/',
-        beforeSend: function() { $('img#_wait_' + id ).show(); },
+        beforeSend: function() { 
+          $('img#_wait_' + self.attr('id') ).show(); 
+        },
         complete:   function() { 
-          $('img#_wait_' + id ).hide(); 
-          $('tr#' + id ).fadeOut();
+          $('img#_wait_' + self.attr('id') ).hide(); 
+          $('tr#' + self.attr('id') ).fadeOut();
         }
       }); 
-    });    
+    });          
   });
 </script>

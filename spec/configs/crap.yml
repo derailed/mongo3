@@ -1,0 +1,20 @@
+test1:
+  host: nowhere
+  port: 12345
+  
+test2:
+  host:     localhost
+  port:     007
+  user:     "admin"
+  password: "admin"
+  
+nowhere:
+  host: funky_town
+  port: 007
+  
+bozo:
+  more_crap: 10
+  
+blee:
+  host: nowhere
+  portola: 10

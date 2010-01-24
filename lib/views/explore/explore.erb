@@ -90,6 +90,11 @@
       onCreateLabel: function(domElement, node){
         domElement.innerHTML = truncate( unescape(node.name), 15 );
         
+        $(domElement).attr('title', node.name );
+        $(domElement).css('z-index', 10 );            
+        $(domElement).tipTip( {maxWidth:'auto', edgeOffset:5} );
+        
+        
         addEvent(domElement, 'click', function () {
           var children_count = 0;
           for( var i in node.adjacencies )
@@ -128,7 +133,12 @@
                   } });
               }
               else {
-                Log.write( "no more data" );
+                Log.write( "loading collection..." );
+                 $.ajax( {
+                    dataType: 'script', 
+                    type:     'GET', 
+                    url:      "/explore/show/" + escape(node.data.path_ids) + "/" + escape(node.data.path_names)
+                 });
               }
            }
       });

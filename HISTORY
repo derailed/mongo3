@@ -27,3 +27,12 @@
   o Added mongo based session store using mongo_rack. (Per Kyle's suggestion! ). This is now the default session store.
     You can alternatively still use memcache ( see README for instructions )
   o Bug fixes and some cleanup
+  
+0.0.8 - Bug fixes and clean up
+
+0.0.9 - Bug fixes and clean up
+
+0.1.0 - Big improvements! 
+  o Added better support for docs and embedded docs.
+  o Change navigation to make it easier to drilldown.
+  o More tests

@@ -15,6 +15,38 @@ module CollectionHelper
   helpers do
     include WillPaginate::ViewHelpers::Base   
    
+    def format_nodes( item, col )
+      buff = []
+      _format_nodes( buff, item, col )
+      buff.join( "\n" )
+    end
+    
+    def _format_nodes( buff, item, col=nil )
+      if item.is_a?( Array )
+        buff << "<li><ins style=\"background-position:-48px -16px\"></ins><span>#{col} <span class=\"meta\" style=\"color:#c1c1c1\">(#{item.size})</span></span>"
+        return buff if item.empty?
+        buff << "<ul>"
+        count = 0
+        item.each do |element|
+          _format_nodes( buff, element ) 
+          count += 1
+        end
+        buff << "</ul>"        
+        buff << "</li>"
+      elsif item.is_a?( Hash )
+        buff << "<li><ins style=\"background-position:-48px -16px\"></ins><span>#{col} (#{item.size})</span>"
+        return buff if item.empty?
+        buff << "<ul>"
+        item.each_pair do |key,val|
+          _format_nodes( buff, val, key ) 
+        end
+        buff << "</ul>"
+        buff << "</li>"
+      else
+        buff << "<li><ins></ins><span title=\"#{item.to_s}\">#{truncate(item.to_s,90)} <span class=\"meta\" style=\"color:#c1c1c1\">#{col ? "[#{col} - #{item.class}]" : "[#{item.class}]"}</span></span></li>"
+      end      
+    end
+    
     # Attempts to format an attribute to some human readable format
     def format_value( value )
       if value.is_a?( Fixnum)

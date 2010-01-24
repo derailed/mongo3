@@ -1,10 +1,10 @@
 <% unless @cltn.empty? %>
-  <div id="fields">
-    <%= partial :'collections/fields_form' %>
-  </div>
+  <!-- <div id="fields">
+    <= partial :'collections/fields_form' %>
+  </div> -->
   
   <div class="table">
-    <%= partial :'collections/rows' %>
+    <%= partial :'collections/rows_tree' %>
   </div>
 <% else %>
   <div class="no_items">Oh snap! No items found...</span>

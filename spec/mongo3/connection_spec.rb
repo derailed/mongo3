@@ -7,7 +7,7 @@ describe Mongo3::Connection do
   before( :all ) do
     @con    = Mongo::Connection.new( 'localhost', 12345 )
     @db     = @con.db( 'mongo3_test_db', :strict => true )
-    @mongo3 = Mongo3::Connection.new( File.join(File.dirname(__FILE__), %w[.. landscape.yml]) )    
+    @mongo3 = Mongo3::Connection.new( File.join(File.dirname(__FILE__), %w[.. configs landscape.yml]) )    
   end
   
   before( :each ) do    
@@ -31,6 +31,63 @@ describe Mongo3::Connection do
       @cltn2.insert( {:name => "test_#{i}", :value => i } )
     end
   end
+
+  describe "configs" do
+    before( :all ) do
+      @crapola = Mongo3::Connection.new( File.join(File.dirname(__FILE__), %w[.. configs crap.yml]) )
+    end
+
+    it "should raise an error on bogus yml" do
+      lambda {
+        con = Mongo3::Connection.new( File.join(File.dirname(__FILE__), %w[.. configs hosed.yml]) )
+        con.send( :config )
+      }.should raise_error( /Unable to grok yaml landscape file/ )
+    end
+    
+    it "should crap out if the zone host is missing correctly" do
+      lambda {
+        @crapola.send( :connect_for, "bozo" )
+      }.should raise_error( /Unable to find `host/ )
+    end    
+    
+    it "should crap out if the zone port is missing correctly" do
+      lambda {
+        @crapola.send( :connect_for, "blee" )
+      }.should raise_error( /Unable to find `port/ )
+    end    
+    
+    it "should crap out if the zone is not correctly configured" do
+      lambda {
+        @crapola.send( :connect_for, "nowhere" )
+      }.should raise_error( /MongoDB connection failed for `"funky_town"/ )
+    end    
+  end
+  
+  describe "zones" do
+    it "should crap out if the zone does not exist" do
+      lambda {
+        @mongo3.send( :connect_for, "shit for brains" )
+      }.should raise_error( /Unable to find zone/ )
+    end
+    
+    it "should connect to a zone with auth correctly" do
+      @mongo3.send( :connect_for, "admin" ) do |con|
+        con.should_not be_nil
+      end
+    end    
+  end
+  
+  describe "drop database" do  
+    it "should drop a database correctly" do
+      dbs = @con.database_names
+      # Quirk? a db does not really exists unless it has a collection
+      db = @con.db( "dead_meat" )
+      db.create_collection( "dead_weight" )
+      @con.database_names.should have( dbs.size + 1 ).items
+      @mongo3.drop_db( "home|test|dead_meat" )
+      @con.database_names.should have( dbs.size ).items    
+    end
+  end
   
   it "should clear out a cltn correctly" do
     @mongo3.clear_cltn( "home|test|mongo3_test_db|test1_cltn" )
@@ -49,13 +106,7 @@ describe Mongo3::Connection do
     @mongo3.drop_cltn( "home|test|mongo3_test_db|test1_cltn" )
     lambda { @db['test1_cltn'] }.should raise_error( /Collection test1_cltn/ )
   end
-  
-  it "should drop a db correctly" do
-    @mongo3.drop_db( "home|test|mongo3_test_db" )
-    @con.database_names.include?( 'mongo3_test_db' ).should == false
-    @db = @con.db( 'mongo3_test_db', :strict => true )    
-  end
-  
+    
   it "should load a landscape file correctly" do
     test = @mongo3.landscape['test']
         
@@ -72,10 +123,13 @@ describe Mongo3::Connection do
     root.data[:path_names].should == 'home'
     
     children = root.children
-    children.should have(1).item
-    children.first.name.should == 'test'
-    children.first.oid.should  == 'test'
-    children.first.children.should be_empty
+    children.should have(2).item
+    children.first.name.should  == 'admin'
+    
+    test = children.last
+    test.name.should == 'test'
+    test.oid.should  == 'test'
+    test.children.should be_empty
   end
   
   describe "#show" do
@@ -144,7 +198,30 @@ describe Mongo3::Connection do
       rows.size.should == 4
       rows.total_entries.should == 4
     end    
+    
+    it "should paginate db with regex q correctly" do
+      pending do
+        rows = @mongo3.paginate_cltn( "home|test|mongo3_test_db|test1_cltn", [{"name"=>"\/test_*\/", "value"=>{"$gt"=>5}}, []] )
+        rows.size.should == 4
+        rows.total_entries.should == 4
+      end
+    end    
+    
   end  
+  
+  describe "slaves" do
+    it "should differentiate with a zone path" do
+      @mongo3.send( :slave_zone?, %w[home test] ).should == false
+    end
+
+    it "should differentiate with a db path" do
+      @mongo3.send( :slave_zone?, %w[home test fred] ).should == false
+    end
+
+    it "should detect a slave zone correctly" do
+      @mongo3.send( :slave_zone?, %w[home test test] ).should == true
+    end
+  end
   
   describe "indexes" do
     it "should list indexes correctly" do
@@ -176,6 +253,22 @@ describe Mongo3::Connection do
       @mongo3.drop_index( "home|test|mongo3_test_db|test1_cltn", "name_1"  )
       indexes = @mongo3.indexes_for( "home|test|mongo3_test_db|test1_cltn" )
       indexes.size.should == before - 1      
+    end
+  end
+  
+  it "should detect a collection correctly" do
+    @mongo3.send( :cltn_request?, %w[blee duh] ).should == false
+    @mongo3.send( :cltn_request?, %w[blee duh fred] ).should == true
+  end
+  
+  describe "#zone_for" do
+    it "should find a zone correctly" do
+      @mongo3.send( :zone_for, "localhost", "12345" ).should == "admin"
+    end
+    
+    it "should fail if a zone does not exist" do
+      @mongo3.send( :zone_for, "ghost", 27017 ).should be_nil
+      @mongo3.send( :zone_for, "localhost", 8888 ).should be_nil      
     end
   end
 end
