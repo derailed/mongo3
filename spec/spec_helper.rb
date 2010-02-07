@@ -7,6 +7,8 @@ require 'will_paginate/collection'
 
 require File.expand_path( File.join( File.dirname(__FILE__), %w[.. lib mongo3] ) )
 
+Spec::Runner.configure do |config|
+puts "HERE !!"  
   begin
     Mongo::Connection.new( 'localhost', 12345 )
   rescue => boom
@@ -19,6 +21,4 @@ require File.expand_path( File.join( File.dirname(__FILE__), %w[.. lib mongo3] )
     puts "\n"*3
     raise "Bailing out"
   end  
-
-Spec::Runner.configure do |config|
 end

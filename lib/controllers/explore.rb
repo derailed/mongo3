@@ -15,7 +15,7 @@ module Explore
   end
 
   # -----------------------------------------------------------------------------
-  get '/explore' do
+  get '/' do
     session[:selected_cols] = nil
     session[:query_params]  = nil
     

@@ -37,3 +37,7 @@
   o Change navigation to make it easier to drilldown ( Tx Tyler !).
   o More tests
   o Improved browser support for saf and chrome - sorry don't do windoze ;-(
+  
+0.1.1
+  o Updated dependencies
+  o Bugs and fixes

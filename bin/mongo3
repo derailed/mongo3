@@ -33,7 +33,7 @@ Main {
       puts "\n"*2  
       puts ">>> Opening console..."
       puts "\n"*2
-      open( "http://localhost:#{default_port}/explore" )
+      open( "http://localhost:#{default_port}" )
     end
     
     # Clearing args for franky!

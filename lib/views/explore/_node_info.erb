@@ -31,7 +31,7 @@
           </p>        
         <% else %>
           <p href="/explore/show/<%=CGI.escape(node.data[:path_ids])%>/<%=CGI.escape(node.data[:path_names])%>" class="show" title="<%=node.name%>">
-            <%=truncate(node.name, 30)%>
+            <%=truncate(node.name, 28)%>
           </p>
           <img class="info" rel="#details" id="<%=count%>" href="/explore/info/<%=CGI.escape(node.data[:path_ids])%>/<%=CGI.escape(node.data[:path_names])%>" title="info for <%=legend%>..." src="/images/information.png"/>  
         <% end %>
