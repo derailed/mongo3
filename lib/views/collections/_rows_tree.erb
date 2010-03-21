@@ -4,12 +4,14 @@
 
 <%= partial :'collections/search_form' %>
 
+<!-- <input onclick="$.tree.focused().open_all( '#0' );", value="open", type="button"/>
+<input onclick="$.tree.focused().close_all( '#0' );", value="close", type="button"/> -->
 <div class="borders" style="padding:10px;">
   <div id="tree">
     <ul>
       <% count=0;@cltn.each do |cltn| %>
         <% id = cltn['_id'] %>
-        <li><span><ins></ins><%=id%></span>
+        <li id="<%=count%>"><span><ins></ins><%=id%></span>
           <div class="delete">
             <img rel="div#confirm_drop" class="delete" style="float:left;" id="<%=id%>" src="/images/delete.png" title="delete this record"/>
             <img class="wait" id="wait_<%=id%>" src="/images/loading.gif"/>
