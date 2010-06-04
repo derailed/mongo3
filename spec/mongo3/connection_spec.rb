@@ -142,7 +142,7 @@ describe Mongo3::Connection do
     
     it "should pull db info correctly" do
       info = @mongo3.show( "home|test|mongo3_test_db" )
-      info.size.should          == 7
+      info.size.should          == 6
       info[:collections].should == 2
       info[:title].should       == "mongo3_test_db"      
     end
@@ -234,7 +234,7 @@ describe Mongo3::Connection do
     it "should add an index correctly" do
       indexes = @mongo3.indexes_for( "home|test|mongo3_test_db|test1_cltn" )
       before = indexes.size
-      @mongo3.create_index( "home|test|mongo3_test_db|test1_cltn", [[:name, Mongo::ASCENDING]], {:unique => 1} )
+      @mongo3.create_index( "home|test|mongo3_test_db|test1_cltn", [[:name, Mongo::ASCENDING]], {:unique => true} )
       indexes = @mongo3.indexes_for( "home|test|mongo3_test_db|test1_cltn" )
       indexes.size.should == before + 1
     end
@@ -242,7 +242,7 @@ describe Mongo3::Connection do
     it "should add a compound index correctly" do
       indexes = @mongo3.indexes_for( "home|test|mongo3_test_db|test1_cltn" )
       before = indexes.size
-      @mongo3.create_index( "home|test|mongo3_test_db|test1_cltn", [[:name, Mongo::ASCENDING], [:_id, Mongo::DESCENDING]], {:unique => 1} )
+      @mongo3.create_index( "home|test|mongo3_test_db|test1_cltn", [[:name, Mongo::ASCENDING], [:_id, Mongo::DESCENDING]], {:unique => true} )
       indexes = @mongo3.indexes_for( "home|test|mongo3_test_db|test1_cltn" )
       indexes.size.should == before + 1
     end

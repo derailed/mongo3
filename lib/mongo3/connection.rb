@@ -54,7 +54,7 @@ module Mongo3
         db_name   = path_name_tokens.pop
         db        = con.db( db_name )
         cltn      = db[cltn_name]
-        cltn.create_index( index, constraints ? constraints['unique'] == 1 : false )
+        cltn.create_index( index, constraints )
       end      
     end
 
@@ -90,16 +90,16 @@ module Mongo3
         db_name   = path_name_tokens.pop
         db        = con.db( db_name )
         cltn      = db[cltn_name]
-        res = cltn.remove( {:_id => Mongo::ObjectID.from_string(id) } )
+        res = cltn.remove( {:_id => BSON::ObjectID.from_string(id) } )
       end
     end
          
     def show( path_names )
       path_name_tokens = path_names.split( "|" )
-      info             = OrderedHash.new
+      info             = BSON::OrderedHash.new
       zone             = path_name_tokens[1]
 
-      info[:links] = OrderedHash.new      
+      info[:links] = BSON::OrderedHash.new      
       info[:title] = path_name_tokens.last
             
       # If detect slave only show reg info
@@ -111,8 +111,12 @@ module Mongo3
           info[:host]           = con.host
           info[:users]          = con.db('admin')[Mongo::DB::SYSTEM_USER_COLLECTION].count rescue 0
           info[:port]           = con.port
-          info[:databases]      = OrderedHash.new
-          con.database_info.sort { |a,b| b[1] <=> a[1] }.each { |e| info[:databases][e[0]] = to_mb( e[1] ) }
+          info[:databases]      = BSON::OrderedHash.new
+          begin
+            con.database_info.sort { |a,b| b[1] <=> a[1] }.each { |e| info[:databases][e[0]] = to_mb( e[1] ) }
+          rescue 
+            # some instances won't allow to snif. Hence no info
+          end
           info[:server]         = con.server_info
         end
       # BOZO !! Need to figure out links strategy!
@@ -122,7 +126,7 @@ module Mongo3
           db = con.db( db_name )
           info[:links][:manage] = "/databases/1"
           info[:size]           = to_mb( con.database_info[db_name] )
-          info[:node]           = db.nodes
+          # info[:node]           = db.nodes
           info[:collections]    = collection_names( db ).size
           info[:error]          = db.error
           info[:last_status]    = db.last_status
@@ -158,7 +162,7 @@ module Mongo3
           cltns = []
           names.each do |name|
             list = db[name]
-            row  = OrderedHash.new
+            row  = BSON::OrderedHash.new
             row[:name]  = name
             row[:count] = list.count
             cltns << row
@@ -393,29 +397,38 @@ module Mongo3
       
       # Filters out system dbs
       def database_names( con )
-        excludes = %w[admin local slave]
-        con.database_names - excludes
+        # MongoHQ does not let u sniff out the connection in this case return single db if any
+        if @info['db_name']
+          [ @info['db_name'] ]
+        else
+          excludes = %w[admin local slave]
+          con.database_names - excludes
+        end
       end
       
       # Connects to mongo given an zone
       def connect_for( zone, &block )
-        info = landscape[zone]
-        raise "Unable to find zone info in config file for zone `#{zone}" unless info
-        raise "Check your config. Unable to find `host information" unless info['host']
-        raise "Check your config. Unable to find `port information" unless info['port']
-        
+        @info = landscape[zone]
+        raise "Unable to find zone info in config file for zone `#{zone}" unless @info
+        raise "Check your config. Unable to find `host information" unless @info['host']
+        raise "Check your config. Unable to find `port information" unless @info['port']
+                
         begin
-          con = Mongo::Connection.new( info['host'], info['port'], { :slave_ok => true } )
+          con = Mongo::Connection.new( @info['host'], @info['port'], { :slave_ok => true } )
         
-          if info['user'] and info['password']
-            con.db( 'admin' ).authenticate( info['user'], info['password'] )
+          if @info['user'] and @info['password']
+            if @info['db_name']
+              con.db( @info['db_name'] ).authenticate( @info['user'], @info['password'] )
+            else
+              con.db( 'admin' ).authenticate( @info['user'], @info['password'] )
+            end
           end
-          yield con        
+          yield con
           con.close()
         rescue => boom
           # puts boom
-          # puts boom.backtrace.each {|l| puts l }          
-          raise "MongoDB connection failed for `#{info['host'].inspect}:#{info['port'].inspect}"
+          # puts boom.backtrace.each {|l| puts l }
+          raise "MongoDB connection failed for `#{@info['host'].inspect}:#{@info['port'].inspect} with #{boom}"
         end
       end
 

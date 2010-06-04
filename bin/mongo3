@@ -9,8 +9,10 @@ Main {
     validate    { |pool| pool =~ URI_MATCH }
     description "specify server uri. Must be of the form {[mongo|memcache]}://{host}:{port}/{[database_name|namespace]}[/{collection_name}]"
   }
-  environment( 'RACK_ENV' ) {
+  option( 'environment', 'e' ) {
+    argument :required
     default 'production'
+    description 'Specifies the env to run mongo3 in'
   }
   
   @@options = {}
@@ -20,7 +22,7 @@ Main {
     require File.expand_path( File.join(File.dirname(__FILE__), %w[.. lib mongo3]))    
     
     @@options = parse_args( params[:pool].value )
-    ENV['RACK_ENV'] = params['RACK_ENV'].value
+    ENV['RACK_ENV'] = params['environment'].value
     
     Thread.new do 
       puts "-"*100

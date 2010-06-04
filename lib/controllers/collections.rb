@@ -39,7 +39,7 @@ module Collections
     @page      = params[:page].to_i || 1
 
     @indexes = options.connection.indexes_for( session[:path_names] )
-    
+puts "INDEXES #{@indexes.inspect}"    
     load_cltn( params[:page].to_i )
     
     erb :'collections/list'

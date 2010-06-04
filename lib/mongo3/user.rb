@@ -14,7 +14,7 @@ module Mongo3
         user = user_cltn.find_one( row )
         raise "User #{user_name} already exists!" if user
         
-        row[:pwd] = user_cltn.db.send( :hash_password, user_name, password )
+        row[:pwd] = Mongo::Support.hash_password( user_name, password )
         return user_cltn.save( row )
       end     
     end
@@ -31,7 +31,7 @@ module Mongo3
     
     def delete( path, id )
       connect_for( path ) do |con|
-        res = users( con ).remove( :_id => Mongo::ObjectID.from_string( id ) )
+        res = users( con ).remove( :_id => BSON::ObjectID.from_string( id ) )
       end      
     end
         

@@ -72,7 +72,8 @@ module CollectionHelper
   
     # converts orientation to human
     def orientation( value )
-      return "id" if value.is_a?(Mongo::ObjectID)
+puts "VALUE #{value.inspect}"      
+      return "id" if value.is_a?(Hash)
       case( value.to_i )
         when Mongo::ASCENDING
           "asc"

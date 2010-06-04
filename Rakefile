@@ -30,8 +30,9 @@ PROJ.spec.opts   << '--color'
 PROJ.rdoc.include = %w[.rb]
 
 # Dependencies
-depend_on "mongo"                 , ">= 0.18.1"
-depend_on "mongo_ext"             , ">= 0.18.1"
+depend_on "mongo"                 , ">= 1.0.1"
+depend_on "bson"                  , ">= 1.0.1"
+depend_on "bson_ext"              , ">= 1.0.1"
 depend_on "agnostic-will_paginate", ">= 3.0.0"
 depend_on "memcache-client"       , ">= 1.5.0"
 depend_on "mongo_rack"            , ">= 0.0.1"

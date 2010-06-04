@@ -80,10 +80,10 @@ describe Mongo3::Node do
     @root.data[:path_names].should        be_nil
   end
   
-  it "should dump to json correctly" do
-    @cltns.first.to_json.should_not be_empty
-    @dbs.first.to_json.should_not   be_empty
-  end
+  # it "should dump to json correctly" do    
+  #   @cltns.first.to_json.should_not be_empty
+  #   @dbs.first.to_json.should_not   be_empty
+  # end
   
   it "should dump adjacencies correctly" do
     item = @cltns.first.to_adjacencies

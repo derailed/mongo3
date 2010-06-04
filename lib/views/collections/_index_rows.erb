@@ -17,8 +17,9 @@
             <img class="wait" id="wait_<%=name%>" src="/images/loading.gif"/>
           </td>
           <td><%=name%></td>
-          <% buff = [];@indexes[name].each do |pair| %>
-            <% buff << format_index( pair )%>
+<% puts @indexes[name].inspect %>          
+          <% buff = [];@indexes[name].each_pair do |k,v| %>
+            <% buff << format_index( [k,v] ) %>
           <% end %>
           <td><%= buff.join( ", " ) %></td>
         </tr>

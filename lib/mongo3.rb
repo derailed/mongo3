@@ -1,7 +1,7 @@
 module Mongo3
   
   # :stopdoc:
-  VERSION = '0.1.2'                                                          unless defined? Mongo3::VERSION
+  VERSION = '0.1.3'                                                          unless defined? Mongo3::VERSION
   LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR unless defined? Mongo3::LIBPATH
   PATH    = ::File.dirname(LIBPATH) + ::File::SEPARATOR                      unless defined? Mongo3::PATH
   # :startdoc:

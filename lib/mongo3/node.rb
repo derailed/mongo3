@@ -1,5 +1,5 @@
 require 'json'
-require 'mongo/util/ordered_hash'
+require 'bson/ordered_hash'
 
 module Mongo3
   class Node
@@ -9,7 +9,7 @@ module Mongo3
       @oid      = oid
       @name     = name
       @children = []
-      @data     = data || OrderedHash.new
+      @data     = data || BSON::OrderedHash.new
       @parent   = nil
     end
     
@@ -78,7 +78,7 @@ module Mongo3
     
     # converts to json
     def to_json(*a)
-      hash = OrderedHash.new
+      hash = BSON::OrderedHash.new
       hash[:id]       = oid
       hash[:name]     = self.name
       hash[:children] = self.children

@@ -7,8 +7,7 @@ require 'will_paginate/collection'
 
 require File.expand_path( File.join( File.dirname(__FILE__), %w[.. lib mongo3] ) )
 
-Spec::Runner.configure do |config|
-puts "HERE !!"  
+Spec::Runner.configure do |config|  
   begin
     Mongo::Connection.new( 'localhost', 12345 )
   rescue => boom
@@ -17,7 +16,7 @@ puts "HERE !!"
     puts ""
     puts "To run the tests you need to a local instance of mongodb on port 12345"
     puts ""
-    puts "> mongodb --dbpath /data/db/mongo3 --port 12345"
+    puts "> mongod --dbpath /data/db/mongo3 --port 12345"
     puts "\n"*3
     raise "Bailing out"
   end  

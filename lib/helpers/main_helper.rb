@@ -49,10 +49,10 @@ module MainHelper
            
     def display_info( info )
       return info if info.is_a?( String )
-      if info.is_a?( Hash )
+      if info.is_a?( Hash ) and !info.empty?        
         @info = info
         partial :'explore/dump_hash'
-      elsif info.is_a?( Array )
+      elsif info.is_a?( Array ) and !info.empty?
         @info = info
         partial :'explore/dump_array'
       else

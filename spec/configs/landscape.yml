@@ -5,5 +5,5 @@ test:
 admin:
   host:     localhost
   port:     12345
-  user:     "admin"
-  password: "admin"
+  # user:     "admin"
+  # password: "admin"
