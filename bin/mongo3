@@ -14,7 +14,12 @@ Main {
     default 'production'
     description 'Specifies the env to run mongo3 in'
   }
-  
+  option( 'browser', 'b' ) {
+    argument :optional
+    default 'system'
+    description 'Specifies browser binary to run upon webserver start'
+  }
+
   @@options = {}
   
   # Enter main loop  
@@ -53,13 +58,18 @@ Main {
   
   # open console...
   def open(path)
-    case RUBY_PLATFORM
-      when /darwin/
-        system 'open', path
-      when /mswin(?!ce)|mingw|cygwin|bccwin/
-        system 'start', path
-      else
-        system 'firefox', path
+    browser = params[:browser].value
+    if browser == 'system' then
+      case RUBY_PLATFORM
+        when /darwin/
+          system 'open', path
+        when /mswin(?!ce)|mingw|cygwin|bccwin/
+          system 'start', path
+        else
+          system 'firefox', path
+      end
+    else
+      system browser, path
     end
   end
   
