@@ -18,11 +18,11 @@ module MainHelper
     end
           
     def v_styles(stylesheet)
-      "/stylesheets/#{stylesheet}.css?" + File.mtime(File.join(Sinatra::Application.public, "stylesheets", "#{stylesheet}.css")).to_i.to_s
+      "/stylesheets/#{stylesheet}.css?" + File.mtime(File.join(Sinatra::Application.root, "..", "lib", "public", "stylesheets", "#{stylesheet}.css")).to_i.to_s
     end
     
     def v_js(js)
-      "/javascripts/#{js}.js?" + File.mtime(File.join(Sinatra::Application.public, "javascripts", "#{js}.js")).to_i.to_s
+      "/javascripts/#{js}.js?" + File.mtime(File.join(Sinatra::Application.root, "..", "lib", "public", "javascripts", "#{js}.js")).to_i.to_s
     end
       
     def zone_locator
