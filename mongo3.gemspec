@@ -18,9 +18,9 @@ Gem::Specification.new do |s|
   s.require_paths             = ["lib"]
   s.required_ruby_version     = ">= 1.9.2"   
   s.required_rubygems_version = ">= 1.3.7"  
-  s.add_runtime_dependency      'mongo'                 , '>= 1.0.1'
-  s.add_runtime_dependency      'bson'                  , '>= 1.0.1'
-  s.add_runtime_dependency      'bson_ext'              , '>= 1.0.1'
+  s.add_runtime_dependency      'mongo'                 , '>= 1.5.0'
+  s.add_runtime_dependency      'bson'                  , '>= 1.6.0'
+  s.add_runtime_dependency      'bson_ext'              , '>= 1.6.0'
   s.add_runtime_dependency      'agnostic-will_paginate', '>= 3.0.0'
   s.add_runtime_dependency      'memcache-client'       , '>= 1.5.0'
   s.add_runtime_dependency      'mongo_rack'            , '>= 0.0.1'
