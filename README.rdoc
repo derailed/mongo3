@@ -97,6 +97,9 @@
     
     --pool {mongo|memcache}://{host}:{port}/{db_name|namespace}/{cltn_name}
   
+    By default console is opened in system default browser. You can pass arbitrary binary with
+    '--browser' CLI key.
+
 == LICENSE:
 
 Copyright 2011-2012 LiquidRail LLC
