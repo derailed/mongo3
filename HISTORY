@@ -47,3 +47,6 @@
   
 0.1.3
   o Updated to mongo ruby 1.0.1 - Fixed issue with lib breakage on OrderedHash
+
+0.1.4
+  o Updated to sinatra rev 1.3.2 and bug fixes

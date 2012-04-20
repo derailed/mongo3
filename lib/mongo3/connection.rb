@@ -125,11 +125,14 @@ module Mongo3
         connect_for( zone ) do |con|          
           db = con.db( db_name )
           info[:links][:manage] = "/databases/1"
-          info[:size]           = to_mb( con.database_info[db_name] )
-          # info[:node]           = db.nodes
-          info[:collections]    = collection_names( db ).size
-          info[:error]          = db.error
-          info[:last_status]    = db.last_status
+          info.merge!(db.stats)
+          info['dataSize']     = to_mb( info['dataSize'] )
+          info['storageSize']  = to_mb( info['storageSize'] )
+          info['avgObjSize']   = to_mb( info['avgObjSize'] )
+          info['fileSize']     = to_mb( info['fileSize'] )
+          info['indexSize']    = to_mb( info['indexSize'] )
+          info.delete('ok')     
+          info[:errors]        = db.error?
         end
       elsif path_name_tokens.size == 4        
         cltn_name = path_name_tokens.pop
@@ -183,7 +186,7 @@ module Mongo3
         db        = con.db( db_name )
         cltn      = db[cltn_name]          
         count     = cltn.find( query_params.first ).count
-        
+puts "Count #{count} -- #{query_params.first}"        
         list = WillPaginate::Collection.create( page, per_page, count ) do |pager|
           offset = (page-1)*per_page
           sort   = query_params.last.empty? ? [ ['_id', Mongo::DESCENDING] ] : query_params.last
@@ -198,7 +201,8 @@ module Mongo3
           results = cltn.find( query, 
             :sort  => sort,
             :skip  => offset, 
-            :limit => per_page ).to_a          
+            :limit => per_page ).to_a   
+puts "RESULTS #{results.count}"                   
           pager.replace( results )
         end        
       end
@@ -426,8 +430,8 @@ module Mongo3
           yield con
           con.close()
         rescue => boom
-          # puts boom
-          # puts boom.backtrace.each {|l| puts l }
+          puts boom
+          puts boom.backtrace.each {|l| puts l }
           raise "MongoDB connection failed for `#{@info['host'].inspect}:#{@info['port'].inspect} with #{boom}"
         end
       end
@@ -456,10 +460,10 @@ module Mongo3
       end
    
       # Convert size to mb
-      def to_mb( val )
+      def to_mb( val )      
         return 0 unless val
-        return val if val < 1_000_000
-        "#{format_number(val/1_000_000)}Mb"
+        return ("%5.2f" % val ) if val < 1_000_000
+        "%5.2f Mb" % (val/1_000_000.0)
       end
    
       # Add thousand markers

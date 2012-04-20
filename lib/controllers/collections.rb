@@ -39,7 +39,6 @@ module Collections
     @page      = params[:page].to_i || 1
 
     @indexes = options.connection.indexes_for( session[:path_names] )
-puts "INDEXES #{@indexes.inspect}"    
     load_cltn( params[:page].to_i )
     
     erb :'collections/list'
@@ -115,7 +114,7 @@ puts "INDEXES #{@indexes.inspect}"
       end
       @page          = page
       path_names     = session[:path_names]
-      
+puts "PARAMS ", query_params.inspect            
       @cltn          = options.connection.paginate_cltn( path_names, query_params, @page, 15 )
     end
   end

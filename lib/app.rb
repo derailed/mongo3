@@ -7,7 +7,7 @@ gem 'agnostic-will_paginate'
 require 'will_paginate'
 require 'mongo_rack'
 
-set :public, File.join( File.dirname(__FILE__), %w[public] )
+set :public_folder, File.join( File.dirname(__FILE__), %w[public] )
 set :views , File.join( File.dirname(__FILE__), %w[views] )
 
 # -----------------------------------------------------------------------------
