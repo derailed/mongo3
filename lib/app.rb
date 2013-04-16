@@ -20,10 +20,13 @@ end
 configure do
   Mongo3.load_all_libs_relative_to(__FILE__, 'helpers' )
   Mongo3.load_all_libs_relative_to(__FILE__, 'controllers' )
+
+  set :config_file, File.join( ENV['HOME'], %w[.mongo3 landscape.yml] )
+  set :connection, Mongo3::Connection.new( File.join( ENV['HOME'], %w[.mongo3 landscape.yml] ) )
  
   # Pick up command line args if any?  
   if defined? @@options and @@options
-    if @@options[:protocol] == 'mongo'
+    if @@options[:protocol] == 'mongo'      
       use Rack::Session::Mongo, 
         :server => "%s:%d/%s/%s" % [@@options[:host], @@options[:port], @@options[:db_name], @@options[:cltn_name]]
     else
@@ -35,8 +38,6 @@ configure do
     # Default is a mongo session store
     use Rack::Session::Mongo
   end
-  set :config_file, File.join( ENV['HOME'], %w[.mongo3 landscape.yml] )
-  set :connection, Mongo3::Connection.new( File.join( ENV['HOME'], %w[.mongo3 landscape.yml] ) )
 end
 
 # -----------------------------------------------------------------------------

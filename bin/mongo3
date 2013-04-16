@@ -1,6 +1,11 @@
 #!/usr/bin/env ruby
 require 'rubygems'
+
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path( "../../Gemfile", __FILE__)
+require 'bundler'
+Bundler.setup()
 require 'main'
+
 
 URI_MATCH = /(mongo|memcache):\/\/(.+?)\:(\d+)\/(\w+)\/{0,1}(\w*)/
 

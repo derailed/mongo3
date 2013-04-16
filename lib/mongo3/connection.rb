@@ -186,7 +186,6 @@ module Mongo3
         db        = con.db( db_name )
         cltn      = db[cltn_name]          
         count     = cltn.find( query_params.first ).count
-puts "Count #{count} -- #{query_params.first}"        
         list = WillPaginate::Collection.create( page, per_page, count ) do |pager|
           offset = (page-1)*per_page
           sort   = query_params.last.empty? ? [ ['_id', Mongo::DESCENDING] ] : query_params.last
@@ -202,7 +201,6 @@ puts "Count #{count} -- #{query_params.first}"
             :sort  => sort,
             :skip  => offset, 
             :limit => per_page ).to_a   
-puts "RESULTS #{results.count}"                   
           pager.replace( results )
         end        
       end
