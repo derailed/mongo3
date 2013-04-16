@@ -1,3 +1,5 @@
+require 'map'
+
 module Mongo3
   
   # :stopdoc:

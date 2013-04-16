@@ -24,7 +24,7 @@ describe Mongo3::Zone do
   
   describe "#zone_for" do
     it "should find a zone correctly" do
-      @zones.send( :zone_for, "localhost", "12345" ).should == "admin"
+      @zones.send( :zone_for, "localhost", "12345" ).should == "test"
     end
     
     it "should fail if a zone does not exist" do

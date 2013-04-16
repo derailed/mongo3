@@ -30,9 +30,11 @@ module Mongo3
     end
     
     def delete( path, id )
+      res = nil
       connect_for( path ) do |con|
-        res = users( con ).remove( :_id => BSON::ObjectID.from_string( id ) )
-      end      
+        res = users( con ).remove( :_id => BSON::ObjectId.from_string( id ) )
+      end
+      res 
     end
         
     def list( path, page, per_page=10 )

@@ -1,13 +1,17 @@
-require 'rubygems'
-require 'rack'
-require 'rack/test'
-require 'mongo'
-gem 'agnostic-will_paginate'
-require 'will_paginate/collection'
+require 'mongo3'
+require 'simplecov'
 
-require File.expand_path( File.join( File.dirname(__FILE__), %w[.. lib mongo3] ) )
+if ENV['COV']
+  SimpleCov.start do
+  end
+end
 
-Spec::Runner.configure do |config|  
+# gem 'agnostic-will_paginate'
+# require 'will_paginate/collection'
+# 
+# require File.expand_path( File.join( File.dirname(__FILE__), %w[.. lib mongo3] ) )
+
+RSpec.configure do |config|
   begin
     Mongo::Connection.new( 'localhost', 12345 )
   rescue => boom

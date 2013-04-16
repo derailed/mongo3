@@ -9,7 +9,7 @@ module Mongo3
       @oid      = oid
       @name     = name
       @children = []
-      @data     = data || BSON::OrderedHash.new
+      @data     = data || Map.new
       @parent   = nil
     end
     
@@ -78,7 +78,7 @@ module Mongo3
     
     # converts to json
     def to_json(*a)
-      hash = BSON::OrderedHash.new
+      hash = Map.new
       hash[:id]       = oid
       hash[:name]     = self.name
       hash[:children] = self.children

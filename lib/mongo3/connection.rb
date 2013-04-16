@@ -1,4 +1,5 @@
 require 'yaml'
+require 'will_paginate/collection'
 
 # BOZO !! Time to refact no?
 # TODO !! Arg check and errors
@@ -60,7 +61,7 @@ module Mongo3
 
     def drop_cltn( path_names )
       path_name_tokens = path_names.split( "|" )
-      zone              = path_name_tokens[1]      
+      zone              = path_name_tokens[1]
       connect_for( zone ) do |con|
         cltn_name = path_name_tokens.pop
         db_name   = path_name_tokens.pop
@@ -90,16 +91,16 @@ module Mongo3
         db_name   = path_name_tokens.pop
         db        = con.db( db_name )
         cltn      = db[cltn_name]
-        res = cltn.remove( {:_id => BSON::ObjectID.from_string(id) } )
+        res = cltn.remove( {:_id => BSON::ObjectId.from_string(id) } )
       end
     end
          
     def show( path_names )
       path_name_tokens = path_names.split( "|" )
-      info             = BSON::OrderedHash.new
+      info             = Map.new
       zone             = path_name_tokens[1]
 
-      info[:links] = BSON::OrderedHash.new      
+      info[:links] = Map.new
       info[:title] = path_name_tokens.last
             
       # If detect slave only show reg info
@@ -111,7 +112,7 @@ module Mongo3
           info[:host]           = con.host
           info[:users]          = con.db('admin')[Mongo::DB::SYSTEM_USER_COLLECTION].count rescue 0
           info[:port]           = con.port
-          info[:databases]      = BSON::OrderedHash.new
+          info[:databases]      = Map.new
           begin
             con.database_info.sort { |a,b| b[1] <=> a[1] }.each { |e| info[:databases][e[0]] = to_mb( e[1] ) }
           rescue 
@@ -159,13 +160,13 @@ module Mongo3
         db      = con.db( db_name )
         cltn    = collection_names(db).sort
         
-        list = WillPaginate::Collection.create( page, per_page, cltn.size ) do |pager|
+        list = ::WillPaginate::Collection.create( page, per_page, cltn.size ) do |pager|
           offset = (page-1)*per_page
           names = cltn[offset..(offset+per_page)]
           cltns = []
           names.each do |name|
             list = db[name]
-            row  = BSON::OrderedHash.new
+            row  = Map.new
             row[:name]  = name
             row[:count] = list.count
             cltns << row

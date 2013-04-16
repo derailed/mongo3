@@ -16,15 +16,15 @@ Gem::Specification.new do |s|
   s.test_files                = `git ls-files -- {specs}/*`.split("\n")
   s.executables               = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths             = ["lib"]
-  s.required_ruby_version     = ">= 1.9.2"   
-  s.required_rubygems_version = ">= 1.3.7"  
-  s.add_runtime_dependency      'mongo'                 , '>= 1.5.0'
-  s.add_runtime_dependency      'bson'                  , '>= 1.6.0'
-  s.add_runtime_dependency      'bson_ext'              , '>= 1.6.0'
-  s.add_runtime_dependency      'agnostic-will_paginate', '>= 3.0.0'
-  s.add_runtime_dependency      'memcache-client'       , '>= 1.5.0'
-  s.add_runtime_dependency      'mongo_rack'            , '>= 0.0.1'
-  s.add_runtime_dependency      'main'                  , '>= 4.2.0'
-  s.add_runtime_dependency      'json'                  , '>= 1.2.0'
-  s.add_runtime_dependency      'sinatra'               , '>= 1.3.0'
+
+  s.add_dependency 'mongo'                 , '>= 1.8.5'
+  s.add_dependency 'bson'                  , '>= 1.8.5'
+  s.add_dependency 'bson_ext'              , '>= 1.8.5'
+  s.add_dependency 'will_paginate'         , '>= 3.0.4'
+  s.add_dependency 'memcache-client'       , '>= 1.8.5'
+  s.add_dependency 'mongo_rack'            , '>= 0.0.5'
+  s.add_dependency 'main'                  , '>= 5.2.0'
+  s.add_dependency 'json'                  , '>= 1.7.0'
+  s.add_dependency 'sinatra'               , '>= 1.4.0'
+  s.add_dependency 'map'                   , '>= 6.3.0'  
 end
