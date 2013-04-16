@@ -1,18 +1,10 @@
 require 'map'
 
-module Mongo3
-  
+module Mongo3  
   # :stopdoc:
-  VERSION = '0.1.6'                                                          unless defined? Mongo3::VERSION
   LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR unless defined? Mongo3::LIBPATH
   PATH    = ::File.dirname(LIBPATH) + ::File::SEPARATOR                      unless defined? Mongo3::PATH
   # :startdoc:
-
-  # Returns the version string for the library.
-  #
-  def self.version
-    VERSION
-  end
 
   # Returns the library path for the module. If any arguments are given,
   # they will be joined to the end of the libray path using

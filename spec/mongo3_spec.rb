@@ -5,10 +5,6 @@ describe Mongo3 do
     @root = ::File.expand_path( ::File.join(::File.dirname(__FILE__), ".." ) )
   end
 
-  it "is versioned" do
-    Mongo3.version.should =~ /\d+\.\d+\.\d+/
-  end
-
   it "generates a correct path relative to root" do
     Mongo3.path( "mongo3.rb" ).should == ::File.join(@root, "mongo3.rb" )
   end

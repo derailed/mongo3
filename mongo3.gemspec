@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "mongo3"
+require "mongo3/version"
 
 Gem::Specification.new do |s|
   s.name                      = 'mongo3'
@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.authors                   = ["Fernand Galiana"]
   s.email                     = ["fernand.galiana@gmail.com"]
   s.homepage                  = 'http://www.mongo3.com'
-  s.summary                   = 'Rule your mongoDB clusters'
+  s.summary                   = 'Rule your mongoDB clusters!'
   s.description               = 'Console to administer MongoDB'
   s.rubyforge_project         = "mongo3"
   s.files                     = `git ls-files`.split("\n")

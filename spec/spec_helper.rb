@@ -1,15 +1,12 @@
-require 'mongo3'
 require 'simplecov'
 
 if ENV['COV']
   SimpleCov.start do
+    add_filter "spec/"
   end
 end
 
-# gem 'agnostic-will_paginate'
-# require 'will_paginate/collection'
-# 
-# require File.expand_path( File.join( File.dirname(__FILE__), %w[.. lib mongo3] ) )
+require 'mongo3'
 
 RSpec.configure do |config|
   begin
