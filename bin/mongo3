@@ -63,6 +63,9 @@ Main {
         system 'open', path
       when /mswin(?!ce)|mingw|cygwin|bccwin/
         system 'start', path
+      when /linux/
+        #TODO: figure out DE-agnostic handler
+        system 'xdg-open', path
       else
         system 'xdg-open', path
     end
