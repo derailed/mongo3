@@ -27,7 +27,7 @@ GEM
       mongo_ext (>= 0.18.2)
       rack (>= 1.0.1)
     multi_json (1.7.2)
-    rack (1.5.2)
+    rack (1.6.13)
     rack-protection (1.5.0)
       rack
     rake (10.0.4)
